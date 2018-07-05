@@ -2,6 +2,7 @@ package UI;
 import Connection.DBConnect;
 import java.security.MessageDigest;
 import java.sql.*;
+import Entities.*;
 
 public class Login extends javax.swing.JFrame {
 
@@ -150,7 +151,10 @@ public class Login extends javax.swing.JFrame {
         try{
             rs = DBConnect.getResultSet("SELECT * FROM user");
             while(rs.next()){
+                Admin ad = new Admin(rs.getInt("userID"),rs.getString("realName"),rs.getString("username"),rs.getString("password"), rs.getString("createdDate"),rs.getString("updatedDate"));
+                
                 if(rs.getString("username").toUpperCase().equals(user) && rs.getString("password").equals(hashed)){
+                    Storage.ad = ad;
                     this.setVisible(false);
                     new Container().open();
                 }
