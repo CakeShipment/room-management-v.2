@@ -6,6 +6,7 @@ import java.sql.*;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.table.DefaultTableModel;
 
 public class Container extends javax.swing.JFrame {
@@ -622,10 +623,19 @@ public class Container extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_issueTitleActionPerformed
 
-    private void confirm_newIssueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirm_newIssueActionPerformed
+    private void confirm_newIssueActionPerformed(java.awt.event.ActionEvent evt) {                                                 
         String issuetitle = issueTitle.getText();
         String issuedesc = issueDesc.getText();
-        String newIssue = room_newIssue.getItemAt(room_newIssue.getSelectedIndex());
+        String varnewIssue = room_newIssue.getItemAt(room_newIssue.getSelectedIndex());
+        int roomID = 0;
+        rs2 = DBConnect.getResultSet("SELECT (room.roomId) FROM room WHERE room.roomName LIKE '"+varnewIssue+"'");
+        try {
+            if(rs2.next()){
+                roomID = rs2.getInt("roomId");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
+        }
         Connection con = DBConnect.getConnection();
         Date currDate = new Date();
         java.sql.Date sqlDate = new java.sql.Date(currDate.getTime());
@@ -635,7 +645,7 @@ public class Container extends javax.swing.JFrame {
         try{
             PreparedStatement stmt = con.prepareStatement(query);
             stmt.setInt(1, Storage.ad.getAdminID());
-            stmt.setInt(2, 1); // Change room ID LATER
+            stmt.setInt(2, roomID); // Change room ID LATER
             stmt.setString(3, issuetitle);
             stmt.setString(4, issuedesc);
             stmt.setInt(5, 0);
@@ -722,7 +732,20 @@ public class Container extends javax.swing.JFrame {
                         }
                     }
                     break;
-            //add
+            case "New Issue":
+                    rs = DBConnect.getResultSet("SELECT * FROM room");
+                    DefaultComboBoxModel combo = (DefaultComboBoxModel) room_newIssue.getModel();
+                    combo.removeAllElements();
+                    room_newIssue.setModel(combo);
+                    {
+                        try {
+                            while(rs.next()){
+                                room_newIssue.addItem(rs.getString("roomName"));
+                            }
+                        } catch (SQLException ex) {
+                            Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
             
             
             default: break;
