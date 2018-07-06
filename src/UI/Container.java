@@ -1,11 +1,21 @@
 package UI;
+
+
 import Entities.*;
+import Connection.DBConnect;
+import java.sql.*;
+import java.util.Date;
 
 public class Container extends javax.swing.JFrame {
 
     public Container() {
         initComponents();
+        init();
+    }
+    
+    private void init(){
         username.setText( Storage.ad.getAdminName());
+        
     }
 
     @SuppressWarnings("unchecked")
@@ -56,7 +66,7 @@ public class Container extends javax.swing.JFrame {
         room_newIssue = new javax.swing.JComboBox<>();
         confirm_newIssue = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTextPane1 = new javax.swing.JTextPane();
+        issueDesc = new javax.swing.JTextPane();
 
         resolve.setTitle("Resolve Issue");
         resolve.setResizable(false);
@@ -476,9 +486,9 @@ public class Container extends javax.swing.JFrame {
             }
         });
 
-        jTextPane1.setBorder(null);
-        jTextPane1.setToolTipText("Issue Description");
-        jScrollPane4.setViewportView(jTextPane1);
+        issueDesc.setBorder(null);
+        issueDesc.setToolTipText("Issue Description");
+        jScrollPane4.setViewportView(issueDesc);
 
         javax.swing.GroupLayout newIssueLayout = new javax.swing.GroupLayout(newIssue);
         newIssue.setLayout(newIssueLayout);
@@ -546,8 +556,32 @@ public class Container extends javax.swing.JFrame {
     }//GEN-LAST:event_issueTitleActionPerformed
 
     private void confirm_newIssueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirm_newIssueActionPerformed
-        String issue = issueTitle.getText();
-        
+        String issuetitle = issueTitle.getText();
+        String issuedesc = issueDesc.getText();
+        String newIssue = room_newIssue.getItemAt(room_newIssue.getSelectedIndex());
+        Connection con = DBConnect.getConnection();
+        Date currDate = new Date();
+        java.sql.Date sqlDate = new java.sql.Date(currDate.getTime());
+        String query = "INSERT INTO todo "
+            + "(`userId`,`roomId`, `issueTitle`, `issueDesc`, `status`, `createdBy`, `updatedBy`, `createdDate`, `updatedDate`) "
+            + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try{
+            PreparedStatement stmt = con.prepareStatement(query);
+            stmt.setInt(1, Storage.ad.getAdminID());
+            stmt.setInt(2, 1); // Change room ID LATER
+            stmt.setString(3, issuetitle);
+            stmt.setString(4, issuedesc);
+            stmt.setInt(5, 0);
+            stmt.setInt(6, Storage.ad.getAdminID());
+            stmt.setInt(7, Storage.ad.getAdminID());
+            stmt.setDate(8, sqlDate);
+            stmt.setDate(9, sqlDate);
+            
+            int insert = stmt.executeUpdate();
+            System.out.println("Inserted "+insert+" rows.");
+        }catch(SQLException ex){
+            System.out.println(ex);
+        }
     }//GEN-LAST:event_confirm_newIssueActionPerformed
 
     public void open() {
@@ -578,6 +612,7 @@ public class Container extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> from;
     private javax.swing.JDialog guest;
     private javax.swing.JTextField guestName;
+    private javax.swing.JTextPane issueDesc;
     private javax.swing.JTextField issueTitle;
     private javax.swing.JLabel issue_name;
     private javax.swing.JLabel issue_name1;
@@ -594,7 +629,6 @@ public class Container extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextPane jTextPane1;
     private javax.swing.JButton logout;
     private javax.swing.JTabbedPane menu;
     private javax.swing.JPanel newIssue;
