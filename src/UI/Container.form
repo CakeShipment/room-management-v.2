@@ -477,25 +477,10 @@
                     <Component class="javax.swing.JTable" name="toDo_table">
                       <Properties>
                         <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                          <Table columnCount="3" rowCount="4">
-                            <Column editable="false" title="Issue" type="java.lang.Object">
-                              <Data value="Broken vase"/>
-                              <Data value="Oven wont turn on"/>
-                              <Data value="Lost TV remote"/>
-                              <Data value="Lost key card"/>
-                            </Column>
-                            <Column editable="false" title="Room" type="java.lang.Object">
-                              <Data value="12B"/>
-                              <Data value="47T"/>
-                              <Data value="47M"/>
-                              <Data value="47M"/>
-                            </Column>
-                            <Column editable="false" title="Reported" type="java.lang.Object">
-                              <Data value="3hrs ago"/>
-                              <Data value="13hrs ago"/>
-                              <Data value="2days ago"/>
-                              <Data value="2days ago"/>
-                            </Column>
+                          <Table columnCount="3" rowCount="0">
+                            <Column editable="false" title="Issue" type="java.lang.Object"/>
+                            <Column editable="false" title="Room" type="java.lang.Object"/>
+                            <Column editable="false" title="Reported" type="java.lang.Object"/>
                           </Table>
                         </Property>
                       </Properties>
@@ -546,22 +531,10 @@
                     <Component class="javax.swing.JTable" name="rooms_table1">
                       <Properties>
                         <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                          <Table columnCount="3" rowCount="3">
-                            <Column editable="false" title="Room ID" type="java.lang.Object">
-                              <Data value="12B"/>
-                              <Data value="47T"/>
-                              <Data value="47M"/>
-                            </Column>
-                            <Column editable="false" title="Status" type="java.lang.Object">
-                              <Data value="Occupied"/>
-                              <Data value="Vacant"/>
-                              <Data value="Occupied"/>
-                            </Column>
-                            <Column editable="false" title="Guest" type="java.lang.Object">
-                              <Data value="Renz Bernados"/>
-                              <Data value="Next guest in 24hrs"/>
-                              <Data value="Kasey Cuyos"/>
-                            </Column>
+                          <Table columnCount="3" rowCount="0">
+                            <Column editable="false" title="Room ID" type="java.lang.Object"/>
+                            <Column editable="false" title="Status" type="java.lang.Object"/>
+                            <Column editable="false" title="Guest" type="java.lang.Object"/>
                           </Table>
                         </Property>
                       </Properties>
@@ -767,27 +740,11 @@
                     <Component class="javax.swing.JTable" name="reservations_table2">
                       <Properties>
                         <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                          <Table columnCount="4" rowCount="3">
-                            <Column editable="false" title="Room ID" type="java.lang.Object">
-                              <Data value="12B"/>
-                              <Data value="47T"/>
-                              <Data value="47M"/>
-                            </Column>
-                            <Column editable="true" title="From" type="java.lang.Object">
-                              <Data value="June-30-2018"/>
-                              <Data value="June-30-2018"/>
-                              <Data value="July-3-2018"/>
-                            </Column>
-                            <Column editable="false" title="To" type="java.lang.Object">
-                              <Data value="July-4-2018"/>
-                              <Data value="July-10-2018"/>
-                              <Data value="July-7-2018"/>
-                            </Column>
-                            <Column editable="false" title="Guest" type="java.lang.Object">
-                              <Data value="Joshua Ty"/>
-                              <Data value="Joshua Isanan"/>
-                              <Data value="Marvin Lim"/>
-                            </Column>
+                          <Table columnCount="4" rowCount="0">
+                            <Column editable="false" title="Room ID" type="java.lang.Object"/>
+                            <Column editable="true" title="From" type="java.lang.Object"/>
+                            <Column editable="false" title="To" type="java.lang.Object"/>
+                            <Column editable="false" title="Guest" type="java.lang.Object"/>
                           </Table>
                         </Property>
                         <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
@@ -959,7 +916,7 @@
                           <EmptySpace min="-2" pref="158" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
                               <Component id="roomCapacity" alignment="1" max="32767" attributes="0"/>
-                              <Component id="confirm1" alignment="1" pref="480" max="32767" attributes="0"/>
+                              <Component id="confirm_newRoom" alignment="1" pref="480" max="32767" attributes="0"/>
                               <Component id="roomName" alignment="0" max="32767" attributes="0"/>
                               <Component id="roomRate" alignment="0" max="32767" attributes="0"/>
                           </Group>
@@ -977,14 +934,14 @@
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="roomRate" min="-2" pref="43" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="140" max="-2" attributes="0"/>
-                          <Component id="confirm1" min="-2" pref="43" max="-2" attributes="0"/>
+                          <Component id="confirm_newRoom" min="-2" pref="43" max="-2" attributes="0"/>
                           <EmptySpace pref="22" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JButton" name="confirm1">
+                <Component class="javax.swing.JButton" name="confirm_newRoom">
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Tahoma" size="18" style="0"/>
@@ -993,7 +950,7 @@
                     <Property name="focusable" type="boolean" value="false"/>
                   </Properties>
                   <Events>
-                    <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="confirm1MouseClicked"/>
+                    <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="confirm_newRoomMouseClicked"/>
                   </Events>
                 </Component>
                 <Component class="javax.swing.JTextField" name="roomCapacity">
