@@ -1,26 +1,25 @@
 package roommanagement;
 import UI.Login;
-import Connection.DBConnect;
-
+import Connection.DBpull;
 import java.sql.*;
 
 public class RoomManagement {
 
    public static void main(String[] args){
-        DBConnect db = new DBConnect();
-        Statement statement = db.getStatement();
-        ResultSet resultSet = null;
-
-        if(statement != null){
-            try{
-                resultSet=statement.executeQuery("SELECT * FROM user");
-                while(resultSet.next()){
-                    System.out.printf("%s\n", resultSet.getString(2));
-                }
-            }catch(SQLException ex){
-                System.out.println(ex);
+        ResultSet rs = null;
+        
+        rs = DBpull.pull("SELECT * FROM user");
+        //so instead of having to declare variables for every class, we just need to
+        //call the static method DBpull.pull(String query);
+        
+        try{//try catch because needed
+            while(rs.next()){
+                System.out.printf("%s\n", rs.getString(2));
             }
+        }catch(SQLException ex){
+            System.out.println(ex);
         }
+       
         new Login().open();
    }
     
