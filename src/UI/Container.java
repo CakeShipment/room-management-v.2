@@ -11,14 +11,35 @@ import javax.swing.table.DefaultTableModel;
 public class Container extends javax.swing.JFrame {
     ResultSet rs = null;
     ResultSet rs2 = null;
+    
     public Container() {
         initComponents();
         init();
+        initToDoTable();
+    }
+    
+    private void initToDoTable(){
+        DefaultTableModel model = null;
+        rs = DBConnect.getResultSet("SELECT todo.issueTitle, room.roomName, todo.updatedDate FROM todo INNER JOIN room ON room.roomId = todo.roomId");
+        model = (DefaultTableModel) toDo_table.getModel();
+        model.setRowCount(0);
+        {
+            try {
+                while(rs.next()){
+                    model.addRow(new Object[]{
+                        rs.getString("issueTitle"),
+                        rs.getString("roomName"),
+                        rs.getString("updatedDate")
+                    });
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
     
     private void init(){
-        username.setText( Storage.ad.getAdminName());
-        
+        username.setText(Storage.ad.getAdminName());
     }
 
     @SuppressWarnings("unchecked")
@@ -69,12 +90,12 @@ public class Container extends javax.swing.JFrame {
         room_newIssue = new javax.swing.JComboBox<>();
         confirm_newIssue = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
+        issueDesc = new javax.swing.JTextPane();
         newRoom = new javax.swing.JPanel();
-        confirm1 = new javax.swing.JButton();
+        confirm_newRoom = new javax.swing.JButton();
         roomCapacity = new javax.swing.JTextField();
         roomName = new javax.swing.JTextField();
         roomRate = new javax.swing.JTextField();
-        issueDesc = new javax.swing.JTextPane();
 
         resolve.setTitle("Resolve Issue");
         resolve.setResizable(false);
@@ -300,10 +321,7 @@ public class Container extends javax.swing.JFrame {
 
         toDo_table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"Broken vase", "12B", "3hrs ago"},
-                {"Oven wont turn on", "47T", "13hrs ago"},
-                {"Lost TV remote", "47M", "2days ago"},
-                {"Lost key card", "47M", "2days ago"}
+
             },
             new String [] {
                 "Issue", "Room", "Reported"
@@ -338,9 +356,7 @@ public class Container extends javax.swing.JFrame {
 
         rooms_table1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"12B", "Occupied", "Renz Bernados"},
-                {"47T", "Vacant", "Next guest in 24hrs"},
-                {"47M", "Occupied", "Kasey Cuyos"}
+
             },
             new String [] {
                 "Room ID", "Status", "Guest"
@@ -442,9 +458,7 @@ public class Container extends javax.swing.JFrame {
 
         reservations_table2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"12B", "June-30-2018", "July-4-2018", "Joshua Ty"},
-                {"47T", "June-30-2018", "July-10-2018", "Joshua Isanan"},
-                {"47M", "July-3-2018", "July-7-2018", "Marvin Lim"}
+
             },
             new String [] {
                 "Room ID", "From", "To", "Guest"
@@ -534,12 +548,12 @@ public class Container extends javax.swing.JFrame {
 
         newRoom.setBackground(new java.awt.Color(255, 255, 255));
 
-        confirm1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        confirm1.setText("Confirm");
-        confirm1.setFocusable(false);
-        confirm1.addMouseListener(new java.awt.event.MouseAdapter() {
+        confirm_newRoom.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        confirm_newRoom.setText("Confirm");
+        confirm_newRoom.setFocusable(false);
+        confirm_newRoom.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                confirm1MouseClicked(evt);
+                confirm_newRoomMouseClicked(evt);
             }
         });
 
@@ -563,7 +577,7 @@ public class Container extends javax.swing.JFrame {
                 .addGap(158, 158, 158)
                 .addGroup(newRoomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(roomCapacity)
-                    .addComponent(confirm1, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
+                    .addComponent(confirm_newRoom, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
                     .addComponent(roomName, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(roomRate, javax.swing.GroupLayout.Alignment.LEADING))
                 .addGap(135, 135, 135))
@@ -578,7 +592,7 @@ public class Container extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(roomRate, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(140, 140, 140)
-                .addComponent(confirm1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(confirm_newRoom, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(22, Short.MAX_VALUE))
         );
 
@@ -622,7 +636,7 @@ public class Container extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_issueTitleActionPerformed
 
-    private void confirm_newIssueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirm_newIssueActionPerformed
+    private void confirm_newIssueActionPerformed(java.awt.event.ActionEvent evt) {                                                 
         String issuetitle = issueTitle.getText();
         String issuedesc = issueDesc.getText();
         String newIssue = room_newIssue.getItemAt(room_newIssue.getSelectedIndex());
@@ -652,7 +666,6 @@ public class Container extends javax.swing.JFrame {
     }
   
     private void menuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuMouseClicked
-        // TODO add your handling code here:
         String tabname = menu.getTitleAt(menu.getSelectedIndex());
         DBConnect db = new DBConnect();
         DefaultTableModel model = null;
@@ -705,33 +718,36 @@ public class Container extends javax.swing.JFrame {
                     }
                     break;
             case "To Do List": 
-                    rs = DBConnect.getResultSet("SELECT todo.issueTitle, room.roomName, todo.updatedDate FROM todo INNER JOIN room ON room.roomId = todo.roomId");
-                    model = (DefaultTableModel) toDo_table.getModel();
-                    model.setRowCount(0);
-                    {
-                        try {
-                            while(rs.next()){
-                                model.addRow(new Object[]{
-                                    rs.getString("issueTitle"),
-                                    rs.getString("roomName"),
-                                    rs.getString("updatedDate")
-                                });
-                            }
-                        } catch (SQLException ex) {
-                            Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
+                    initToDoTable();
                     break;
-            //add
-            
-            
             default: break;
         }
     }//GEN-LAST:event_menuMouseClicked
 
-    private void confirm1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_confirm1MouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_confirm1MouseClicked
+    private void confirm_newRoomMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_confirm_newRoomMouseClicked
+        Connection con = DBConnect.getConnection();
+        Date currDate = new Date();
+        java.sql.Date sqlDate = new java.sql.Date(currDate.getTime());
+        String query = "INSERT INTO room "
+            + "(`roomName`,`roomCapacity`, `roomVacancy`, `roomRate`, `createdBy`, `updatedBy`, `createdDate`, `updatedDate`) "
+            + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)";
+        try{
+            PreparedStatement stmt = con.prepareStatement(query);
+            stmt.setString(1, roomName.getText());
+            stmt.setInt(2, Integer.parseInt(roomCapacity.getText()));
+            stmt.setInt(3, 1);
+            stmt.setFloat(4, Float.parseFloat(roomRate.getText()));
+            stmt.setInt(5, Storage.ad.getAdminID());
+            stmt.setInt(6, Storage.ad.getAdminID());
+            stmt.setDate(7, sqlDate);
+            stmt.setDate(8, sqlDate);
+            
+            int insert = stmt.executeUpdate();
+            System.out.println("Added new room named " + roomName.getText());
+        }catch(SQLException ex){
+            System.out.println(ex);
+        }
+    }//GEN-LAST:event_confirm_newRoomMouseClicked
 
     public void open() {
 
@@ -755,8 +771,8 @@ public class Container extends javax.swing.JFrame {
     private javax.swing.JButton cancel_resolve;
     private javax.swing.JLabel checkout;
     private javax.swing.JButton confirm;
-    private javax.swing.JButton confirm1;
     private javax.swing.JButton confirm_newIssue;
+    private javax.swing.JButton confirm_newRoom;
     private javax.swing.JButton confirm_resolve;
     private javax.swing.JButton delete_guest;
     private javax.swing.JComboBox<String> from;
