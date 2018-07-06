@@ -1,22 +1,12 @@
 package UI;
-
-
-import Connection.DBConnect;
+import Connection.DBpull;
 import java.security.MessageDigest;
 import java.sql.*;
 
 public class Login extends javax.swing.JFrame {
-    DBConnect db = null;
-    Statement statement = null;
 
     public Login() {
         initComponents();
-        initDB();
-    }
-    
-    private void initDB(){
-        this.db = new DBConnect();
-        this.statement = db.getStatement();
     }
 
     @SuppressWarnings("unchecked")
@@ -138,7 +128,7 @@ public class Login extends javax.swing.JFrame {
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
         String user = username.getText().toUpperCase();
         String pass = password.getText();
-        ResultSet result = null;
+        ResultSet rs = null;
         String hashed;
         
         try{
@@ -158,9 +148,9 @@ public class Login extends javax.swing.JFrame {
         }
         
         try{
-            result=statement.executeQuery("SELECT * FROM user");
-            while(result.next()){
-                if(result.getString("username").toUpperCase().equals(user) && result.getString("password").equals(hashed)){
+            rs = DBpull.pull("SELECT * FROM user");
+            while(rs.next()){
+                if(rs.getString("username").toUpperCase().equals(user) && rs.getString("password").equals(hashed)){
                     this.setVisible(false);
                     new Container().open();
                 }
