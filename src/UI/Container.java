@@ -20,6 +20,11 @@ public class Container extends javax.swing.JFrame {
     ResultSet rs = null;
     ResultSet rs2 = null;
     
+    private JTable table;
+    private Point point;
+    private int row;
+    private int col;
+    
     public Container() {
         initComponents();
         init();
@@ -31,7 +36,7 @@ public class Container extends javax.swing.JFrame {
     
     private void initToDoTable(){
         DefaultTableModel model = null;
-        rs = DBConnect.getResultSet("SELECT todo.issueTitle, room.roomName, todo.updatedDate FROM todo INNER JOIN room ON room.roomId = todo.roomId");
+        rs = DBConnect.getResultSet("SELECT todo.issueTitle, room.roomName, todo.updatedDate FROM todo INNER JOIN room ON room.roomId = todo.roomId WHERE todo.status!=1");
         model = (DefaultTableModel) toDo_table.getModel();
         model.setRowCount(0);
         {
@@ -47,37 +52,17 @@ public class Container extends javax.swing.JFrame {
                 Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        
         toDo_table.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent mouseEvent) {
-                JTable table =(JTable) mouseEvent.getSource();
-                Point point = mouseEvent.getPoint();
-                int row = table.rowAtPoint(point);
-                int col = table.columnAtPoint(point);
+                
+                table =(JTable) mouseEvent.getSource();
+                point = mouseEvent.getPoint();
+                row = table.rowAtPoint(point);
+                col = table.columnAtPoint(point);
 
                 if (mouseEvent.getClickCount() == 2 ) {
-                    if(JOptionPane.showConfirmDialog(rootPane, "Resolve Issue?")==0){
-                        Connection con = DBConnect.getConnection();
-                        int issueID = 0;
-                        String varnewIssue = (String)table.getValueAt(table.getSelectedRow(), 0);
-                        String sql = "DELETE FROM todo WHERE todoId = ?";
-                        try {
-                            PreparedStatement stmt = con.prepareStatement(sql);
-                            rs2 = DBConnect.getResultSet("SELECT (todo.todoId) FROM todo WHERE todo.issueTitle LIKE '"+varnewIssue+"'");
-                            try {
-                                if(rs2.next()){
-                                    issueID = rs2.getInt("todoId");
-                                }
-                            } catch (SQLException ex) {
-                                Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            stmt.setInt(1, issueID);
-                            stmt.executeUpdate();
-                            initToDoTable();
-                        } catch (SQLException ex) {
-                            Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
-                        }
- 
-                    }
+                    resolve.setVisible(true);
                 }
             }
         });
@@ -143,7 +128,9 @@ public class Container extends javax.swing.JFrame {
         roomRate = new javax.swing.JTextField();
 
         resolve.setTitle("Resolve Issue");
-        resolve.setResizable(false);
+        resolve.setMaximumSize(new java.awt.Dimension(495, 281));
+        resolve.setMinimumSize(new java.awt.Dimension(495, 281));
+        resolve.setType(java.awt.Window.Type.POPUP);
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -174,14 +161,25 @@ public class Container extends javax.swing.JFrame {
         room_id.setText("12B");
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel3.setText("Mark as ressolved?");
+        jLabel3.setText("Mark as resolved?");
 
         confirm_resolve.setText("Confirm");
         confirm_resolve.setFocusable(false);
+        confirm_resolve.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                confirm_resolveMouseClicked(evt);
+            }
+        });
 
         cancel_resolve.setText("Cancel");
         cancel_resolve.setFocusable(false);
+        cancel_resolve.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cancel_resolveMouseClicked(evt);
+            }
+        });
 
+        jTextArea1.setEditable(false);
         jTextArea1.setColumns(20);
         jTextArea1.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
         jTextArea1.setRows(5);
@@ -215,7 +213,7 @@ public class Container extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel3)
+                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(confirm_resolve)
@@ -708,7 +706,9 @@ public class Container extends javax.swing.JFrame {
             stmt.setInt(7, Storage.ad.getAdminID());
             stmt.setDate(8, sqlDate);
             stmt.setDate(9, sqlDate);
-            
+            issueTitle.setText("");
+            issueDesc.setText("");
+            JOptionPane.showMessageDialog(rootPane, "Successfully Added Issue");
             int insert = stmt.executeUpdate();
             System.out.println("Inserted "+insert+" rows.");
         }catch(SQLException ex){
@@ -856,6 +856,39 @@ public class Container extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_confirm_newRoomMouseClicked
 
+    private void confirm_resolveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_confirm_resolveMouseClicked
+       if(JOptionPane.showConfirmDialog(rootPane, "Resolve Issue?")==0){
+        Connection con = DBConnect.getConnection();
+        int issueID = 0, found = 0;
+        String varnewIssue = (String)table.getValueAt(table.getSelectedRow(), 0);
+        String sql = "UPDATE todo SET status = ? WHERE todoId = ?";
+        try {
+            PreparedStatement stmt = con.prepareStatement(sql);
+            rs2 = DBConnect.getResultSet("SELECT (todo.todoId) FROM todo WHERE todo.issueTitle LIKE '"+varnewIssue+"'");
+            try {
+                if(rs2.next()){
+                    issueID = rs2.getInt("todoId");
+                    found = 1;
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            stmt.setInt(1, found);
+            stmt.setInt(2, issueID);
+            stmt.executeUpdate();
+            resolve.setVisible(false);
+            initToDoTable();
+        } catch (SQLException ex) {
+            Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+    }//GEN-LAST:event_confirm_resolveMouseClicked
+
+    private void cancel_resolveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cancel_resolveMouseClicked
+        resolve.dispose();
+    }//GEN-LAST:event_cancel_resolveMouseClicked
+  
     private void confirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmActionPerformed
         // TODO add your handling code here:
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
