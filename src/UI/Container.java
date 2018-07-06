@@ -23,6 +23,7 @@ public class Container extends javax.swing.JFrame {
     
     private JTable table;
     private Point point;
+    private int getIssueId;
     private int row;
     private int col;
     
@@ -63,6 +64,38 @@ public class Container extends javax.swing.JFrame {
                 col = table.columnAtPoint(point);
 
                 if (mouseEvent.getClickCount() == 2 ) {
+                    String issueTitle = (String) table.getValueAt(table.getSelectedRow(), 0);
+                    String roomName = (String) table.getValueAt(table.getSelectedRow(), 1);
+                    rs2 = DBConnect.getResultSet("SELECT * FROM todo INNER JOIN room ON room.roomId = todo.roomId WHERE room.roomName LIKE '"+roomName+"' AND todo.issueTitle LIKE '"+issueTitle+"'");
+                    
+                    ResultSet rs3 = DBConnect.getResultSet("SELECT * FROM room");
+                    DefaultComboBoxModel combo = (DefaultComboBoxModel) resolve_edit_room.getModel();
+                    combo.removeAllElements();
+                    resolve_edit_room.setModel(combo);
+                    
+                    try {
+                        while(rs3.next()){
+                            resolve_edit_room.addItem(rs3.getString("roomName"));
+                        }
+                    } catch (SQLException ex) {
+                        Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    
+                    try { 
+                        if(rs2.next()){
+                            issue_name.setText(rs2.getString("issueTitle"));
+                            room_name.setText(rs2.getString("roomName"));
+                            issue_detail.setText(rs2.getString("issueDesc"));
+                            
+                            resolve_edit_rid.setText(Integer.toString(rs2.getInt("roomId")));
+                            resolve_edit_id.setText(Integer.toString(rs2.getInt("todoId")));
+                            resolve_edit_title.setText(rs2.getString("issueTitle"));
+                            resolve_edit_room.setSelectedItem("roomName");
+                            resolve_edit_detail.setText(rs2.getString("issueDesc"));
+                        }
+                    } catch (SQLException ex) {
+                        Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                     resolve.setVisible(true);
                 }
             }
@@ -86,6 +119,15 @@ public class Container extends javax.swing.JFrame {
         confirm_resolve = new javax.swing.JButton();
         cancel_resolve = new javax.swing.JButton();
         jScrollPane5 = new javax.swing.JScrollPane();
+        issue_detail = new javax.swing.JTextArea();
+        resolve_edit_panel = new javax.swing.JPanel();
+        resolve_edit_title = new javax.swing.JTextField();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        resolve_edit_detail = new javax.swing.JTextArea();
+        resolve_edit_room = new javax.swing.JComboBox<>();
+        resolve_edit_confirm = new javax.swing.JButton();
+        resolve_edit_id = new javax.swing.JLabel();
+        resolve_edit_rid = new javax.swing.JLabel();
         jTextArea1 = new javax.swing.JTextArea();
         guest = new javax.swing.JDialog();
         jPanel4 = new javax.swing.JPanel();
@@ -225,7 +267,87 @@ public class Container extends javax.swing.JFrame {
                     .addComponent(cancel_resolve))
                 .addContainerGap())
         );
+        jTabbedPane1.addTab("Resolve Issue", resolve_resolve_panel);
 
+        resolve_edit_panel.setBackground(new java.awt.Color(255, 255, 255));
+
+        resolve_edit_title.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        resolve_edit_title.setText("<resolve_edit_title>");
+        resolve_edit_title.setToolTipText("Issue title");
+        resolve_edit_title.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(0, 0, 0)));
+
+        resolve_edit_detail.setColumns(20);
+        resolve_edit_detail.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
+        resolve_edit_detail.setRows(5);
+        resolve_edit_detail.setText("<resolve_edit_detail>");
+        jScrollPane6.setViewportView(resolve_edit_detail);
+
+        resolve_edit_room.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        resolve_edit_room.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "12B", "47T", "47M" }));
+        resolve_edit_room.setToolTipText("Room");
+        resolve_edit_room.setBorder(null);
+        resolve_edit_room.setFocusable(false);
+        resolve_edit_room.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resolve_edit_roomActionPerformed(evt);
+            }
+        });
+
+        resolve_edit_confirm.setText("Confirm");
+        resolve_edit_confirm.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                resolve_edit_confirmMouseClicked(evt);
+            }
+        });
+
+        resolve_edit_id.setFont(new java.awt.Font("Tahoma", 0, 1)); // NOI18N
+        resolve_edit_id.setEnabled(false);
+
+        resolve_edit_rid.setFont(new java.awt.Font("Tahoma", 0, 1)); // NOI18N
+        resolve_edit_rid.setEnabled(false);
+
+        javax.swing.GroupLayout resolve_edit_panelLayout = new javax.swing.GroupLayout(resolve_edit_panel);
+        resolve_edit_panel.setLayout(resolve_edit_panelLayout);
+        resolve_edit_panelLayout.setHorizontalGroup(
+            resolve_edit_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(resolve_edit_panelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(resolve_edit_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(resolve_edit_confirm, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(resolve_edit_room, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
+                    .addComponent(resolve_edit_title)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, resolve_edit_panelLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(resolve_edit_id)))
+                .addContainerGap())
+            .addGroup(resolve_edit_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, resolve_edit_panelLayout.createSequentialGroup()
+                    .addContainerGap(475, Short.MAX_VALUE)
+                    .addComponent(resolve_edit_rid)
+                    .addGap(20, 20, 20)))
+        );
+        resolve_edit_panelLayout.setVerticalGroup(
+            resolve_edit_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(resolve_edit_panelLayout.createSequentialGroup()
+                .addComponent(resolve_edit_id)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(resolve_edit_title, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(resolve_edit_room, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(resolve_edit_confirm, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+            .addGroup(resolve_edit_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(resolve_edit_panelLayout.createSequentialGroup()
+                    .addGap(10, 10, 10)
+                    .addComponent(resolve_edit_rid)
+                    .addContainerGap(312, Short.MAX_VALUE)))
+        );
+
+        jTabbedPane1.addTab("Edit Issue", resolve_edit_panel);
         javax.swing.GroupLayout resolveLayout = new javax.swing.GroupLayout(resolve.getContentPane());
         resolve.getContentPane().setLayout(resolveLayout);
         resolveLayout.setHorizontalGroup(
@@ -958,36 +1080,37 @@ public class Container extends javax.swing.JFrame {
             }
         } else if(roomname.isEmpty()){
             errorName.setText("!");
+        } else if(!roomname.isEmpty()){
+            errorName.setText("!");
         }
     }//GEN-LAST:event_confirm_newRoomMouseClicked
 
     private void confirm_resolveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_confirm_resolveMouseClicked
-       if(JOptionPane.showConfirmDialog(rootPane, "Resolve Issue?")==0){
-        Connection con = DBConnect.getConnection();
-        int issueID = 0, found = 0;
-        String varnewIssue = (String)table.getValueAt(table.getSelectedRow(), 0);
-        String sql = "UPDATE todo SET status = ? WHERE todoId = ?";
-        try {
-            PreparedStatement stmt = con.prepareStatement(sql);
-            rs2 = DBConnect.getResultSet("SELECT (todo.todoId) FROM todo WHERE todo.issueTitle LIKE '"+varnewIssue+"'");
+        if(JOptionPane.showConfirmDialog(rootPane, "Resolve Issue?")==0){
+            Connection con = DBConnect.getConnection();
+            int issueID = 0, found = 0;
+            String varnewIssue = (String)table.getValueAt(table.getSelectedRow(), 0);
+            String sql = "UPDATE todo SET status = ? WHERE todoId = ?";
             try {
-                if(rs2.next()){
-                    issueID = rs2.getInt("todoId");
-                    found = 1;
+                PreparedStatement stmt = con.prepareStatement(sql);
+                rs2 = DBConnect.getResultSet("SELECT (todo.todoId) FROM todo WHERE todo.issueTitle LIKE '"+varnewIssue+"'");
+                try {
+                    if(rs2.next()){
+                        issueID = rs2.getInt("todoId");
+                        found = 1;
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                stmt.setInt(1, found);
+                stmt.setInt(2, issueID);
+                stmt.executeUpdate();
+                resolve.setVisible(false);
+                initToDoTable();
             } catch (SQLException ex) {
                 Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
             }
-            stmt.setInt(1, found);
-            stmt.setInt(2, issueID);
-            stmt.executeUpdate();
-            resolve.setVisible(false);
-            initToDoTable();
-        } catch (SQLException ex) {
-            Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-    }
     }//GEN-LAST:event_confirm_resolveMouseClicked
 
     private void cancel_resolveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cancel_resolveMouseClicked
@@ -1039,12 +1162,52 @@ public class Container extends javax.swing.JFrame {
         }
         
     }//GEN-LAST:event_confirmActionPerformed
-
+    private void resolve_edit_confirmMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_resolve_edit_confirmMouseClicked
+        Connection con = DBConnect.getConnection();
+        int todoid = Integer.parseInt(resolve_edit_id.getText());
+        
+        String varnewIssue = resolve_edit_room.getItemAt(resolve_edit_room.getSelectedIndex());
+        int roomid = 0;
+        rs2 = DBConnect.getResultSet("SELECT (room.roomId) FROM room WHERE room.roomName LIKE '"+varnewIssue+"'");
+        try {
+            if(rs2.next()){
+                roomid = rs2.getInt("roomId");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
+        }
+            Date currDate = new Date();
+            Calendar c = Calendar.getInstance(); 
+            c.setTime(currDate); 
+            c.add(Calendar.DATE, 1);
+            currDate = c.getTime();
+            java.sql.Date sqlDate = new java.sql.Date(currDate.getTime());
+        String sql = "UPDATE todo SET issueTitle = ?, issueDesc = ?, roomId = ?, updatedBy = ?, updatedDate = ?  WHERE todoId = ?";
+        try {
+            PreparedStatement stmt = con.prepareStatement(sql);
+            rs2 = DBConnect.getResultSet("SELECT (todo.todoId) FROM todo WHERE todo.issueTitle LIKE '"+varnewIssue+"'");
+            stmt.setString(1, resolve_edit_title.getText());
+            stmt.setString(2, resolve_edit_detail.getText());
+            stmt.setInt(3, roomid);
+            stmt.setInt(4, Storage.ad.getAdminID());
+            stmt.setDate(5, sqlDate);
+            stmt.setInt(6, todoid);
+            stmt.executeUpdate();
+            resolve.setVisible(false);
+            initToDoTable();
+        } catch (SQLException ex) {
+            Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_resolve_edit_confirmMouseClicked
     private void logoutMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoutMouseClicked
         this.setVisible(false);
         Storage.ad = null;
         new Login().open();
     }//GEN-LAST:event_logoutMouseClicked
+
+    private void resolve_edit_roomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resolve_edit_roomActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_resolve_edit_roomActionPerformed
 
     public void open() {
 
@@ -1109,6 +1272,14 @@ public class Container extends javax.swing.JFrame {
     private javax.swing.JPanel reservations;
     private javax.swing.JTable reservations_table2;
     private javax.swing.JDialog resolve;
+    private javax.swing.JButton resolve_edit_confirm;
+    private javax.swing.JTextArea resolve_edit_detail;
+    private javax.swing.JLabel resolve_edit_id;
+    private javax.swing.JPanel resolve_edit_panel;
+    private javax.swing.JLabel resolve_edit_rid;
+    private javax.swing.JComboBox<String> resolve_edit_room;
+    private javax.swing.JTextField resolve_edit_title;
+    private javax.swing.JPanel resolve_resolve_panel;
     private javax.swing.JComboBox<String> room;
     private javax.swing.JTextField roomCapacity;
     private javax.swing.JTextField roomName;
