@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import java.sql.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -121,14 +122,18 @@ public class Container extends javax.swing.JFrame {
         confirm_newIssue = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         issueDesc = new javax.swing.JTextPane();
+        errordesc = new javax.swing.JLabel();
+        errortitle = new javax.swing.JLabel();
         newRoom = new javax.swing.JPanel();
         confirm_newRoom = new javax.swing.JButton();
         roomCapacity = new javax.swing.JTextField();
         roomName = new javax.swing.JTextField();
         roomRate = new javax.swing.JTextField();
+        errorName = new javax.swing.JLabel();
+        errorCapacity = new javax.swing.JLabel();
+        errorRate = new javax.swing.JLabel();
 
         resolve.setTitle("Resolve Issue");
-        resolve.setMaximumSize(new java.awt.Dimension(495, 281));
         resolve.setMinimumSize(new java.awt.Dimension(495, 281));
         resolve.setType(java.awt.Window.Type.POPUP);
 
@@ -332,6 +337,11 @@ public class Container extends javax.swing.JFrame {
         logout.setText("Log out");
         logout.setToolTipText("");
         logout.setFocusable(false);
+        logout.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                logoutMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -557,6 +567,14 @@ public class Container extends javax.swing.JFrame {
         issueDesc.setToolTipText("Issue Description");
         jScrollPane4.setViewportView(issueDesc);
 
+        errordesc.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
+        errordesc.setForeground(new java.awt.Color(255, 153, 102));
+        errordesc.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        errortitle.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
+        errortitle.setForeground(new java.awt.Color(255, 153, 102));
+        errortitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
         javax.swing.GroupLayout newIssueLayout = new javax.swing.GroupLayout(newIssue);
         newIssue.setLayout(newIssueLayout);
         newIssueLayout.setHorizontalGroup(
@@ -568,15 +586,26 @@ public class Container extends javax.swing.JFrame {
                     .addComponent(issueTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
                     .addComponent(room_newIssue, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(confirm_newIssue, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(148, 148, 148))
+                .addGap(18, 18, 18)
+                .addGroup(newIssueLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(errordesc, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(errortitle, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(80, 80, 80))
         );
         newIssueLayout.setVerticalGroup(
             newIssueLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(newIssueLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(issueTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)
+                .addGroup(newIssueLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(newIssueLayout.createSequentialGroup()
+                        .addComponent(issueTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, newIssueLayout.createSequentialGroup()
+                        .addComponent(errortitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(8, 8, 8)))
+                .addGroup(newIssueLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(errordesc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addComponent(room_newIssue, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -609,6 +638,18 @@ public class Container extends javax.swing.JFrame {
         roomRate.setToolTipText("Room rate");
         roomRate.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(0, 0, 0)));
 
+        errorName.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
+        errorName.setForeground(new java.awt.Color(255, 153, 102));
+        errorName.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        errorCapacity.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
+        errorCapacity.setForeground(new java.awt.Color(255, 153, 102));
+        errorCapacity.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        errorRate.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
+        errorRate.setForeground(new java.awt.Color(255, 153, 102));
+        errorRate.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
         javax.swing.GroupLayout newRoomLayout = new javax.swing.GroupLayout(newRoom);
         newRoom.setLayout(newRoomLayout);
         newRoomLayout.setHorizontalGroup(
@@ -620,20 +661,32 @@ public class Container extends javax.swing.JFrame {
                     .addComponent(confirm_newRoom, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
                     .addComponent(roomName, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(roomRate, javax.swing.GroupLayout.Alignment.LEADING))
-                .addGap(135, 135, 135))
+                .addGap(18, 18, 18)
+                .addGroup(newRoomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(errorName, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(errorCapacity, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(errorRate, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(67, 67, 67))
         );
         newRoomLayout.setVerticalGroup(
             newRoomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(newRoomLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(roomName, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(roomCapacity, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(roomRate, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(newRoomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(newRoomLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(roomName, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(errorName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(newRoomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(roomCapacity, javax.swing.GroupLayout.DEFAULT_SIZE, 55, Short.MAX_VALUE)
+                    .addComponent(errorCapacity, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(newRoomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(roomRate, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(errorRate, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(140, 140, 140)
                 .addComponent(confirm_newRoom, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         menu.addTab("Add Room", newRoom);
@@ -681,38 +734,58 @@ public class Container extends javax.swing.JFrame {
         String issuedesc = issueDesc.getText();
         String varnewIssue = room_newIssue.getItemAt(room_newIssue.getSelectedIndex());
         int roomID = 0;
-        rs2 = DBConnect.getResultSet("SELECT (room.roomId) FROM room WHERE room.roomName LIKE '"+varnewIssue+"'");
-        try {
-            if(rs2.next()){
-                roomID = rs2.getInt("roomId");
+        if(!issuetitle.isEmpty() && !issuedesc.isEmpty()){
+            rs2 = DBConnect.getResultSet("SELECT (room.roomId) FROM room WHERE room.roomName LIKE '"+varnewIssue+"'");
+            try {
+                if(rs2.next()){
+                    roomID = rs2.getInt("roomId");
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        Connection con = DBConnect.getConnection();
-        Date currDate = new Date();
-        java.sql.Date sqlDate = new java.sql.Date(currDate.getTime());
-        String query = "INSERT INTO todo "
-            + "(`userId`,`roomId`, `issueTitle`, `issueDesc`, `status`, `createdBy`, `updatedBy`, `createdDate`, `updatedDate`) "
-            + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try{
-            PreparedStatement stmt = con.prepareStatement(query);
-            stmt.setInt(1, Storage.ad.getAdminID());
-            stmt.setInt(2, roomID); // Change room ID LATER
-            stmt.setString(3, issuetitle);
-            stmt.setString(4, issuedesc);
-            stmt.setInt(5, 0);
-            stmt.setInt(6, Storage.ad.getAdminID());
-            stmt.setInt(7, Storage.ad.getAdminID());
-            stmt.setDate(8, sqlDate);
-            stmt.setDate(9, sqlDate);
-            issueTitle.setText("");
-            issueDesc.setText("");
-            JOptionPane.showMessageDialog(rootPane, "Successfully Added Issue");
-            int insert = stmt.executeUpdate();
-            System.out.println("Inserted "+insert+" rows.");
-        }catch(SQLException ex){
-            System.out.println(ex);
+            Connection con = DBConnect.getConnection();
+            Date currDate = new Date();
+            Calendar c = Calendar.getInstance(); 
+            c.setTime(currDate); 
+            c.add(Calendar.DATE, 1);
+            currDate = c.getTime();
+            java.sql.Date sqlDate = new java.sql.Date(currDate.getTime());
+            String query = "INSERT INTO todo "
+                + "(`userId`,`roomId`, `issueTitle`, `issueDesc`, `status`, `createdBy`, `updatedBy`, `createdDate`, `updatedDate`) "
+                + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            try{
+                PreparedStatement stmt = con.prepareStatement(query);
+                stmt.setInt(1, Storage.ad.getAdminID());
+                stmt.setInt(2, roomID); // Change room ID LATER
+                stmt.setString(3, issuetitle);
+                stmt.setString(4, issuedesc);
+                stmt.setInt(5, 0);
+                stmt.setInt(6, Storage.ad.getAdminID());
+                stmt.setInt(7, Storage.ad.getAdminID());
+                stmt.setDate(8, sqlDate);
+                stmt.setDate(9, sqlDate);
+                issueTitle.setText("");
+                issueDesc.setText("");
+                errortitle.setText("");
+                errordesc.setText("");
+                JOptionPane.showMessageDialog(rootPane, "Successfully Added Issue");
+                int insert = stmt.executeUpdate();
+                System.out.println(sqlDate);
+                System.out.println("Inserted "+insert+" rows.");
+            }catch(SQLException ex){
+                System.out.println(ex);
+            }
+        } else {
+            if(issuetitle.isEmpty()){
+                errortitle.setText("!");
+            } else if (!issuetitle.isEmpty()){
+                errortitle.setText("");
+            }
+            if(issuedesc.isEmpty()){
+                errordesc.setText("!");
+            } else if (!issuedesc.isEmpty()){
+                errordesc.setText("");
+            }
         }
     }
   
@@ -832,27 +905,59 @@ public class Container extends javax.swing.JFrame {
     }//GEN-LAST:event_menuMouseClicked
 
     private void confirm_newRoomMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_confirm_newRoomMouseClicked
-        Connection con = DBConnect.getConnection();
-        Date currDate = new Date();
-        java.sql.Date sqlDate = new java.sql.Date(currDate.getTime());
-        String query = "INSERT INTO room "
-            + "(`roomName`,`roomCapacity`, `roomVacancy`, `roomRate`, `createdBy`, `updatedBy`, `createdDate`, `updatedDate`) "
-            + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)";
+        String roomname = roomName.getText();
+        Integer roomcapacity = 0;
+        Float roomrate = (float) 0;
+        
         try{
-            PreparedStatement stmt = con.prepareStatement(query);
-            stmt.setString(1, roomName.getText());
-            stmt.setInt(2, Integer.parseInt(roomCapacity.getText()));
-            stmt.setInt(3, 1);
-            stmt.setFloat(4, Float.parseFloat(roomRate.getText()));
-            stmt.setInt(5, Storage.ad.getAdminID());
-            stmt.setInt(6, Storage.ad.getAdminID());
-            stmt.setDate(7, sqlDate);
-            stmt.setDate(8, sqlDate);
-            
-            int insert = stmt.executeUpdate();
-            System.out.println("Added new room named " + roomName.getText());
-        }catch(SQLException ex){
-            System.out.println(ex);
+            roomcapacity = Integer.parseInt(roomCapacity.getText());
+            errorCapacity.setText("");
+        }catch(Exception e){
+            errorCapacity.setText("!");
+            System.out.println(e);
+        }
+        
+        try{
+            roomrate = Float.parseFloat(roomRate.getText());
+            errorRate.setText("");
+        }catch(Exception e){
+            errorRate.setText("!");
+            System.out.println(e);
+        }
+        if(!roomname.isEmpty() && roomcapacity > 0 && roomrate > 0){
+            Connection con = DBConnect.getConnection();
+            Date currDate = new Date();
+            Calendar c = Calendar.getInstance(); 
+            c.setTime(currDate); 
+            c.add(Calendar.DATE, 1);
+            currDate = c.getTime();
+            java.sql.Date sqlDate = new java.sql.Date(currDate.getTime());
+            String query = "INSERT INTO room "
+                + "(`roomName`,`roomCapacity`, `roomVacancy`, `roomRate`, `createdBy`, `updatedBy`, `createdDate`, `updatedDate`) "
+                + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)";
+            try{
+                PreparedStatement stmt = con.prepareStatement(query);
+                stmt.setString(1, roomname);
+                stmt.setInt(2, roomcapacity);
+                stmt.setInt(3, 1);
+                stmt.setFloat(4, Float.parseFloat(roomRate.getText()));
+                stmt.setInt(5, Storage.ad.getAdminID());
+                stmt.setInt(6, Storage.ad.getAdminID());
+                stmt.setDate(7, sqlDate);
+                stmt.setDate(8, sqlDate);
+
+                int insert = stmt.executeUpdate();
+                errorName.setText("");
+                roomCapacity.setText("");
+                roomName.setText("");
+                roomRate.setText("");
+                JOptionPane.showMessageDialog(rootPane, "Successfully Added Room");
+                System.out.println("Added new room named " + roomName.getText());
+            }catch(SQLException ex){
+                System.out.println(ex);
+            }
+        } else if(roomname.isEmpty()){
+            errorName.setText("!");
         }
     }//GEN-LAST:event_confirm_newRoomMouseClicked
 
@@ -935,6 +1040,12 @@ public class Container extends javax.swing.JFrame {
         
     }//GEN-LAST:event_confirmActionPerformed
 
+    private void logoutMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoutMouseClicked
+        this.setVisible(false);
+        Storage.ad = null;
+        new Login().open();
+    }//GEN-LAST:event_logoutMouseClicked
+
     public void open() {
 
         try {
@@ -963,6 +1074,11 @@ public class Container extends javax.swing.JFrame {
     private javax.swing.JButton confirm_newRoom;
     private javax.swing.JButton confirm_resolve;
     private javax.swing.JButton delete_guest;
+    private javax.swing.JLabel errorCapacity;
+    private javax.swing.JLabel errorName;
+    private javax.swing.JLabel errorRate;
+    private javax.swing.JLabel errordesc;
+    private javax.swing.JLabel errortitle;
     private javax.swing.JDialog guest;
     private javax.swing.JTextField guestName;
     private javax.swing.JTextPane issueDesc;
