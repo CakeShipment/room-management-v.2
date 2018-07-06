@@ -1,9 +1,11 @@
 package UI;
+import Entities.*;
 
 public class Container extends javax.swing.JFrame {
 
     public Container() {
         initComponents();
+        username.setText( Storage.ad.getAdminName());
     }
 
     @SuppressWarnings("unchecked")
