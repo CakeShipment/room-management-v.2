@@ -8,6 +8,7 @@ import javax.swing.table.DefaultTableModel;
 
 public class Container extends javax.swing.JFrame {
     ResultSet rs = null;
+    ResultSet rs2 = null;
     public Container() {
         initComponents();
         username.setText( Storage.ad.getAdminName());
@@ -559,6 +560,7 @@ public class Container extends javax.swing.JFrame {
         switch(tabname){
             case "Rooms": 
                     rs = DBConnect.getResultSet("SELECT * FROM room INNER JOIN reservations ON room.roomid = reservations.roomid INNER JOIN guest ON reservations.guestid = guest.guestid");
+                    rs2 = DBConnect.getResultSet("SELECT * FROM room INNER JOIN reservations ON room.roomid != reservations.roomid");
                     model = (DefaultTableModel) rooms_table1.getModel();
                     model.setRowCount(0);
                     {
@@ -567,6 +569,33 @@ public class Container extends javax.swing.JFrame {
                                 model.addRow(new Object[]{
                                     rs.getString("roomName"),
                                     vacancy = (rs.getBoolean("roomVacancy") == true)? "Vacant" : "Occupied",
+                                    rs.getString("guestName")
+                                    
+                                });
+                            }
+                            while(rs2.next()){
+                                model.addRow(new Object[]{
+                                    rs2.getString("roomName"),
+                                    vacancy = (rs2.getBoolean("roomVacancy") == true)? "Vacant" : "Occupied",
+                                    null,
+                                });
+                            }
+                        } catch (SQLException ex) {
+                            Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    break;
+            case "Reservations":
+                    rs = DBConnect.getResultSet("SELECT * FROM room INNER JOIN reservations ON room.roomid = reservations.roomid INNER JOIN guest ON reservations.guestid = guest.guestid");
+                    model = (DefaultTableModel) reservations_table2.getModel();
+                    model.setRowCount(0);
+                    {
+                        try {
+                            while(rs.next()){
+                                model.addRow(new Object[]{
+                                    rs.getString("roomName"),
+                                    rs.getDate("checkInDate"),
+                                    rs.getDate("checkOutDate"),
                                     rs.getString("guestName")
                                 });
                             }

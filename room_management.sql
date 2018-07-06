@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 06, 2018 at 06:02 AM
+-- Generation Time: Jul 06, 2018 at 09:55 AM
 -- Server version: 10.1.30-MariaDB
 -- PHP Version: 7.2.2
 
@@ -107,7 +107,8 @@ CREATE TABLE `todo` (
   `todoId` int(11) NOT NULL,
   `userId` int(11) NOT NULL,
   `roomId` int(11) NOT NULL,
-  `toDo` varchar(1000) NOT NULL,
+  `issueTitle` varchar(100) NOT NULL,
+  `issueDesc` varchar(1000) NOT NULL,
   `status` tinyint(1) NOT NULL DEFAULT '0',
   `createdBy` int(11) NOT NULL,
   `updatedBy` int(11) NOT NULL,
@@ -119,8 +120,9 @@ CREATE TABLE `todo` (
 -- Dumping data for table `todo`
 --
 
-INSERT INTO `todo` (`todoId`, `userId`, `roomId`, `toDo`, `status`, `createdBy`, `updatedBy`, `createdDate`, `updatedDate`) VALUES
-(1, 3, 2, 'Bed broken', 0, 3, 3, '2018-07-06', '2018-07-06');
+INSERT INTO `todo` (`todoId`, `userId`, `roomId`, `issueTitle`, `issueDesc`, `status`, `createdBy`, `updatedBy`, `createdDate`, `updatedDate`) VALUES
+(1, 3, 2, 'Bed broken', '', 0, 3, 3, '2018-07-06', '2018-07-06'),
+(2, 3, 1, 'Faucet not working', '', 0, 3, 1, '2018-07-03', '2018-07-06');
 
 -- --------------------------------------------------------
 
@@ -218,7 +220,7 @@ ALTER TABLE `room`
 -- AUTO_INCREMENT for table `todo`
 --
 ALTER TABLE `todo`
-  MODIFY `todoId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `todoId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `user`
