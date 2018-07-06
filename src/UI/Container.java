@@ -60,8 +60,23 @@ public class Container extends javax.swing.JFrame {
                 point = mouseEvent.getPoint();
                 row = table.rowAtPoint(point);
                 col = table.columnAtPoint(point);
-
+                
+                
                 if (mouseEvent.getClickCount() == 2 ) {
+                    String issueTitle = (String) table.getValueAt(table.getSelectedRow(), 0);
+                    String roomName = (String) table.getValueAt(table.getSelectedRow(), 1);
+                    rs2 = DBConnect.getResultSet("SELECT * FROM todo INNER JOIN room ON room.roomId = todo.roomId WHERE room.roomName LIKE '"+roomName+"' AND todo.issueTitle LIKE '"+issueTitle+"'");
+                        
+                    try { 
+                        if(rs2.next()){
+                            issue_name.setText(rs2.getString("issueTitle"));
+                            room_name.setText(rs2.getString("roomName"));
+                            issue_detail.setText(rs2.getString("issueDesc"));
+                        }
+                    } catch (SQLException ex) {
+                        Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    
                     resolve.setVisible(true);
                 }
             }
@@ -80,12 +95,12 @@ public class Container extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         issue_name = new javax.swing.JLabel();
-        room_id = new javax.swing.JLabel();
+        room_name = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         confirm_resolve = new javax.swing.JButton();
         cancel_resolve = new javax.swing.JButton();
         jScrollPane5 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        issue_detail = new javax.swing.JTextArea();
         guest = new javax.swing.JDialog();
         jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
@@ -138,7 +153,7 @@ public class Container extends javax.swing.JFrame {
 
         issue_name.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         issue_name.setForeground(new java.awt.Color(255, 255, 255));
-        issue_name.setText("Broken vase");
+        issue_name.setText("<issue_name>");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -157,8 +172,8 @@ public class Container extends javax.swing.JFrame {
                 .addGap(30, 30, 30))
         );
 
-        room_id.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        room_id.setText("12B");
+        room_name.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        room_name.setText("<room_name>");
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel3.setText("Mark as resolved?");
@@ -179,12 +194,12 @@ public class Container extends javax.swing.JFrame {
             }
         });
 
-        jTextArea1.setEditable(false);
-        jTextArea1.setColumns(20);
-        jTextArea1.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
-        jTextArea1.setRows(5);
-        jTextArea1.setText("The guest's 4 ear old kid accidentally dropped it.");
-        jScrollPane5.setViewportView(jTextArea1);
+        issue_detail.setEditable(false);
+        issue_detail.setColumns(20);
+        issue_detail.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
+        issue_detail.setRows(5);
+        issue_detail.setText("<issue_detail>");
+        jScrollPane5.setViewportView(issue_detail);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -194,7 +209,7 @@ public class Container extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(room_id, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE)
+                    .addComponent(room_name, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(cancel_resolve)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -209,7 +224,7 @@ public class Container extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(room_id)
+                .addComponent(room_name)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -967,6 +982,7 @@ public class Container extends javax.swing.JFrame {
     private javax.swing.JTextField guestName;
     private javax.swing.JTextPane issueDesc;
     private javax.swing.JTextField issueTitle;
+    private javax.swing.JTextArea issue_detail;
     private javax.swing.JLabel issue_name;
     private javax.swing.JLabel issue_name1;
     private javax.swing.JLabel jLabel3;
@@ -981,7 +997,6 @@ public class Container extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JButton logout;
     private javax.swing.JTabbedPane menu;
     private javax.swing.JPanel newIssue;
@@ -997,7 +1012,7 @@ public class Container extends javax.swing.JFrame {
     private javax.swing.JTextField roomCapacity;
     private javax.swing.JTextField roomName;
     private javax.swing.JTextField roomRate;
-    private javax.swing.JLabel room_id;
+    private javax.swing.JLabel room_name;
     private javax.swing.JComboBox<String> room_newIssue;
     private javax.swing.JPanel rooms;
     private javax.swing.JTable rooms_table1;
