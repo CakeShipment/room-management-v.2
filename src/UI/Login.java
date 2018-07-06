@@ -1,5 +1,5 @@
 package UI;
-import Connection.DBpull;
+import Connection.DBConnect;
 import java.security.MessageDigest;
 import java.sql.*;
 
@@ -148,7 +148,7 @@ public class Login extends javax.swing.JFrame {
         }
         
         try{
-            rs = DBpull.pull("SELECT * FROM user");
+            rs = DBConnect.getResultSet("SELECT * FROM user");
             while(rs.next()){
                 if(rs.getString("username").toUpperCase().equals(user) && rs.getString("password").equals(hashed)){
                     this.setVisible(false);
