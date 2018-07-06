@@ -69,7 +69,6 @@ public class Container extends javax.swing.JFrame {
         room_newIssue = new javax.swing.JComboBox<>();
         confirm_newIssue = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTextPane1 = new javax.swing.JTextPane();
         newRoom = new javax.swing.JPanel();
         confirm1 = new javax.swing.JButton();
         roomCapacity = new javax.swing.JTextField();
