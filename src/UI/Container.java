@@ -2,11 +2,16 @@ package UI;
 
 import Connection.DBConnect;
 import Entities.*;
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.*;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 public class Container extends javax.swing.JFrame {
@@ -37,6 +42,40 @@ public class Container extends javax.swing.JFrame {
                 Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        toDo_table.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent mouseEvent) {
+                JTable table =(JTable) mouseEvent.getSource();
+                Point point = mouseEvent.getPoint();
+                int row = table.rowAtPoint(point);
+                int col = table.columnAtPoint(point);
+
+                if (mouseEvent.getClickCount() == 2 ) {
+                    if(JOptionPane.showConfirmDialog(rootPane, "Resolve Issue?")==0){
+                        Connection con = DBConnect.getConnection();
+                        int issueID = 0;
+                        String varnewIssue = (String)table.getValueAt(table.getSelectedRow(), 0);
+                        String sql = "DELETE FROM todo WHERE todoId = ?";
+                        try {
+                            PreparedStatement stmt = con.prepareStatement(sql);
+                            rs2 = DBConnect.getResultSet("SELECT (todo.todoId) FROM todo WHERE todo.issueTitle LIKE '"+varnewIssue+"'");
+                            try {
+                                if(rs2.next()){
+                                    issueID = rs2.getInt("todoId");
+                                }
+                            } catch (SQLException ex) {
+                                Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            stmt.setInt(1, issueID);
+                            stmt.executeUpdate();
+                            initToDoTable();
+                        } catch (SQLException ex) {
+                            Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+ 
+                    }
+                }
+            }
+        });
     }
     
     private void init(){
@@ -707,6 +746,18 @@ public class Container extends javax.swing.JFrame {
                             Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
+                    rooms_table1.addMouseListener(new MouseAdapter() {
+                        public void mousePressed(MouseEvent mouseEvent) {
+                            JTable table =(JTable) mouseEvent.getSource();
+                            Point point = mouseEvent.getPoint();
+                            int row = table.rowAtPoint(point);
+                            int col = table.columnAtPoint(point);
+
+                            if (mouseEvent.getClickCount() == 2 ) {
+                                JOptionPane.showMessageDialog(rootPane,"PopUp");
+                            }
+                        }
+                    });
                     break;
             case "Reservations":
                     rs = DBConnect.getResultSet("SELECT * FROM room INNER JOIN reservations ON room.roomid = reservations.roomid INNER JOIN guest ON reservations.guestid = guest.guestid");
@@ -726,6 +777,18 @@ public class Container extends javax.swing.JFrame {
                             Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
+                    reservations_table2.addMouseListener(new MouseAdapter() {
+                        public void mousePressed(MouseEvent mouseEvent) {
+                            JTable table =(JTable) mouseEvent.getSource();
+                            Point point = mouseEvent.getPoint();
+                            int row = table.rowAtPoint(point);
+                            int col = table.columnAtPoint(point);
+
+                            if (mouseEvent.getClickCount() == 2 ) {
+                                JOptionPane.showMessageDialog(rootPane,"PopUp");
+                            }
+                        }
+                    });
                     break;
             case "To Do List": 
                     initToDoTable();
@@ -746,6 +809,7 @@ public class Container extends javax.swing.JFrame {
                     }
             default: break;
         }
+        
     }//GEN-LAST:event_menuMouseClicked
 
     private void confirm_newRoomMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_confirm_newRoomMouseClicked
