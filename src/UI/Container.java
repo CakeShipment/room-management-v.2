@@ -468,6 +468,11 @@ public class Container extends javax.swing.JFrame {
         confirm_newIssue.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         confirm_newIssue.setText("Confirm");
         confirm_newIssue.setFocusable(false);
+        confirm_newIssue.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                confirm_newIssueActionPerformed(evt);
+            }
+        });
 
         jTextPane1.setBorder(null);
         jTextPane1.setToolTipText("Issue Description");
@@ -510,7 +515,7 @@ public class Container extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(menu)
                     .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 9, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -524,7 +529,7 @@ public class Container extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 885, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -537,6 +542,11 @@ public class Container extends javax.swing.JFrame {
     private void issueTitleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_issueTitleActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_issueTitleActionPerformed
+
+    private void confirm_newIssueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirm_newIssueActionPerformed
+        String issue = issueTitle.getText();
+        
+    }//GEN-LAST:event_confirm_newIssueActionPerformed
 
     public void open() {
 
