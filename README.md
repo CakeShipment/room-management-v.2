@@ -23,6 +23,10 @@
     - view list of rooms (color coded)
     - view list of reservations (color coded)
     - view list of issues
+    - edit price rating of the rooms
+    - edit details about the rooms
+    - edit dates on the reservation
+    - edit `issue` details
     - change reservation(guest) `paid` status
     - change issue `resolve` status (also considered as deleting an issue)
     - delete rooms

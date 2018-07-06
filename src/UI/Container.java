@@ -241,9 +241,12 @@ public class Container extends javax.swing.JFrame {
         username.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         username.setForeground(new java.awt.Color(255, 255, 255));
         username.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        username.setText("Juan Dela Cruz");
+        username.setText("User_name");
 
+        logout.setBackground(new java.awt.Color(255, 255, 255));
+        logout.setForeground(new java.awt.Color(0, 204, 204));
         logout.setText("Log out");
+        logout.setToolTipText("");
         logout.setFocusable(false);
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
@@ -345,16 +348,19 @@ public class Container extends javax.swing.JFrame {
 
         room.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         room.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "12B", "47T", "47M" }));
+        room.setToolTipText("Room");
         room.setBorder(null);
         room.setFocusable(false);
 
         from.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         from.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "July-1-2018", "July-2-2018", "July-3-2018" }));
+        from.setToolTipText("Checkin date");
         from.setBorder(null);
         from.setFocusable(false);
 
         to.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         to.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "July-2-2018", "July-3-2018", "July-4-2018" }));
+        to.setToolTipText("Checkout date");
         to.setBorder(null);
         to.setFocusable(false);
 
@@ -363,13 +369,11 @@ public class Container extends javax.swing.JFrame {
         confirm.setFocusable(false);
 
         pax.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        pax.setText("Number of People");
-        pax.setToolTipText("");
+        pax.setToolTipText("Number of People");
         pax.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(0, 0, 0)));
 
         guestName.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        guestName.setText("Guest Name");
-        guestName.setToolTipText("");
+        guestName.setToolTipText("Guest Name");
         guestName.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(0, 0, 0)));
 
         javax.swing.GroupLayout newReservationLayout = new javax.swing.GroupLayout(newReservation);
@@ -447,8 +451,7 @@ public class Container extends javax.swing.JFrame {
         newIssue.setBackground(new java.awt.Color(255, 255, 255));
 
         issueTitle.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        issueTitle.setText("Issue Title");
-        issueTitle.setToolTipText("");
+        issueTitle.setToolTipText("Issue Title");
         issueTitle.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(0, 0, 0)));
         issueTitle.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -458,6 +461,7 @@ public class Container extends javax.swing.JFrame {
 
         room_newIssue.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         room_newIssue.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "12B", "47T", "47M" }));
+        room_newIssue.setToolTipText("Room");
         room_newIssue.setBorder(null);
         room_newIssue.setFocusable(false);
 
@@ -466,7 +470,7 @@ public class Container extends javax.swing.JFrame {
         confirm_newIssue.setFocusable(false);
 
         jTextPane1.setBorder(null);
-        jTextPane1.setText("Issue Description");
+        jTextPane1.setToolTipText("Issue Description");
         jScrollPane4.setViewportView(jTextPane1);
 
         javax.swing.GroupLayout newIssueLayout = new javax.swing.GroupLayout(newIssue);

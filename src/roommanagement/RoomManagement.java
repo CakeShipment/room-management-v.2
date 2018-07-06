@@ -1,10 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package roommanagement;
-
+import UI.Login;
 
 import java.sql.*;
 
@@ -37,10 +32,11 @@ public class RoomManagement {
             System.out.printf("%s\n",
             resultSet.getString(2));
          }
-
+        
       }catch(SQLException ex){
           System.out.println(ex);
       }
+      new Login().open();
    }
     
 }

@@ -29,7 +29,6 @@ public class Login extends javax.swing.JFrame {
         username.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         username.setForeground(new java.awt.Color(255, 255, 255));
         username.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        username.setText("Username");
         username.setToolTipText("Username");
         username.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(255, 255, 255)));
         username.setCaretColor(new java.awt.Color(255, 255, 255));
@@ -38,15 +37,21 @@ public class Login extends javax.swing.JFrame {
         password.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         password.setForeground(new java.awt.Color(255, 255, 255));
         password.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        password.setText("Password");
+        password.setToolTipText("Password");
         password.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(255, 255, 255)));
         password.setCaretColor(new java.awt.Color(255, 255, 255));
         password.setPreferredSize(new java.awt.Dimension(78, 24));
 
         login.setBackground(new java.awt.Color(255, 255, 255));
         login.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        login.setForeground(new java.awt.Color(0, 204, 204));
         login.setText("Login");
         login.setFocusable(false);
+        login.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loginActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -116,6 +121,10 @@ public class Login extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
+        new Container().open();
+    }//GEN-LAST:event_loginActionPerformed
 
     public void open() {
 
