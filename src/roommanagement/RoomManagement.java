@@ -4,10 +4,6 @@ import Connection.DBConnect;
 
 import java.sql.*;
 
-/**
- *
- * @author Cake
- */
 public class RoomManagement {
 
    public static void main(String[] args){
@@ -19,14 +15,13 @@ public class RoomManagement {
             try{
                 resultSet=statement.executeQuery("SELECT * FROM user");
                 while(resultSet.next()){
-                    System.out.printf("%s\n",
-                    resultSet.getString(2));
+                    System.out.printf("%s\n", resultSet.getString(2));
                 }
             }catch(SQLException ex){
                 System.out.println(ex);
             }
         }
-      new Login().open();
+        new Login().open();
    }
     
 }
