@@ -136,7 +136,7 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
-        String user = username.getText();
+        String user = username.getText().toUpperCase();
         String pass = password.getText();
         ResultSet result = null;
         String hashed;
@@ -160,7 +160,7 @@ public class Login extends javax.swing.JFrame {
         try{
             result=statement.executeQuery("SELECT * FROM user");
             while(result.next()){
-                if(result.getString("username").equals(user) && result.getString("password").equals(hashed)){
+                if(result.getString("username").toUpperCase().equals(user) && result.getString("password").equals(hashed)){
                     this.setVisible(false);
                     new Container().open();
                 }
