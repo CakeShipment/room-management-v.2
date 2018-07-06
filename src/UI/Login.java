@@ -1,9 +1,22 @@
 package UI;
 
+
+import Connection.DBConnect;
+import java.security.MessageDigest;
+import java.sql.*;
+
 public class Login extends javax.swing.JFrame {
+    DBConnect db = null;
+    Statement statement = null;
 
     public Login() {
         initComponents();
+        initDB();
+    }
+    
+    private void initDB(){
+        this.db = new DBConnect();
+        this.statement = db.getStatement();
     }
 
     @SuppressWarnings("unchecked")
@@ -123,7 +136,38 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginActionPerformed
-        new Container().open();
+        String user = username.getText();
+        String pass = password.getText();
+        ResultSet result = null;
+        String hashed;
+        
+        try{
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(pass.getBytes("UTF-8"));
+            StringBuffer hexString = new StringBuffer();
+
+            for (int i = 0; i < hash.length; i++) {
+                String hex = Integer.toHexString(0xff & hash[i]);
+                if(hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+
+            hashed = hexString.toString().toUpperCase();
+        } catch(Exception ex){
+           throw new RuntimeException(ex);
+        }
+        
+        try{
+            result=statement.executeQuery("SELECT * FROM user");
+            while(result.next()){
+                if(result.getString("username").equals(user) && result.getString("password").equals(hashed)){
+                    this.setVisible(false);
+                    new Container().open();
+                }
+            }
+        }catch(SQLException ex){
+            System.out.println(ex);
+        }
     }//GEN-LAST:event_loginActionPerformed
 
     public void open() {
