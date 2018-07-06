@@ -145,7 +145,7 @@ public class Login extends javax.swing.JFrame {
 
             hashed = hexString.toString().toUpperCase();
         } catch(Exception ex){
-           throw new RuntimeException(ex);
+            throw new RuntimeException(ex);
         }
         
         try{
