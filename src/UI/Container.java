@@ -623,7 +623,7 @@ public class Container extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_issueTitleActionPerformed
 
-    private void confirm_newIssueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirm_newIssueActionPerformed
+    private void confirm_newIssueActionPerformed(java.awt.event.ActionEvent evt) {                                                 
         String issuetitle = issueTitle.getText();
         String issuedesc = issueDesc.getText();
         String newIssue = room_newIssue.getItemAt(room_newIssue.getSelectedIndex());
@@ -723,7 +723,17 @@ public class Container extends javax.swing.JFrame {
                         }
                     }
                     break;
-            //add
+            case "New Issue":
+                    rs = DBConnect.getResultSet("SELECT * FROM room");
+                    {
+                        try {
+                            while(rs.next()){
+                                room_newIssue.addItem(rs.getString("roomName"));
+                            }
+                        } catch (SQLException ex) {
+                            Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
             
             
             default: break;
