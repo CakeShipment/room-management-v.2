@@ -3,11 +3,15 @@ package UI;
 import Connection.DBConnect;
 import Entities.*;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,6 +19,8 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import org.jdesktop.swingx.JXDatePicker;
+import org.jdesktop.swingx.calendar.CalendarUtils;
 
 public class Container extends javax.swing.JFrame {
     ResultSet rs = null;
@@ -112,6 +118,7 @@ public class Container extends javax.swing.JFrame {
         guestName = new javax.swing.JTextField();
         DateStart = new org.jdesktop.swingx.JXDatePicker();
         DateEnd = new org.jdesktop.swingx.JXDatePicker();
+        ValiBtn = new javax.swing.JButton();
         reservations = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         reservations_table2 = new javax.swing.JTable();
@@ -128,7 +135,6 @@ public class Container extends javax.swing.JFrame {
         roomRate = new javax.swing.JTextField();
 
         resolve.setTitle("Resolve Issue");
-        resolve.setMaximumSize(new java.awt.Dimension(495, 281));
         resolve.setMinimumSize(new java.awt.Dimension(495, 281));
         resolve.setType(java.awt.Window.Type.POPUP);
 
@@ -352,9 +358,9 @@ public class Container extends javax.swing.JFrame {
 
         menu.setTabPlacement(javax.swing.JTabbedPane.LEFT);
         menu.setFocusable(false);
-        menu.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                menuMouseClicked(evt);
+        menu.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                menuStateChanged(evt);
             }
         });
 
@@ -457,6 +463,13 @@ public class Container extends javax.swing.JFrame {
 
         DateEnd.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
 
+        ValiBtn.setText("Validate");
+        ValiBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ValiBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout newReservationLayout = new javax.swing.GroupLayout(newReservation);
         newReservation.setLayout(newReservationLayout);
         newReservationLayout.setHorizontalGroup(
@@ -467,9 +480,12 @@ public class Container extends javax.swing.JFrame {
                     .addComponent(DateStart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(pax)
                     .addComponent(confirm, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
-                    .addComponent(room, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(guestName, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(DateEnd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(DateEnd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, newReservationLayout.createSequentialGroup()
+                        .addComponent(room, javax.swing.GroupLayout.PREFERRED_SIZE, 367, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(ValiBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(135, 135, 135))
         );
         newReservationLayout.setVerticalGroup(
@@ -480,7 +496,9 @@ public class Container extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(pax, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(room, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(newReservationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(room, javax.swing.GroupLayout.DEFAULT_SIZE, 43, Short.MAX_VALUE)
+                    .addComponent(ValiBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addComponent(DateStart, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -716,7 +734,111 @@ public class Container extends javax.swing.JFrame {
         }
     }
   
-    private void menuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuMouseClicked
+    private void confirm_newRoomMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_confirm_newRoomMouseClicked
+        Connection con = DBConnect.getConnection();
+        Date currDate = new Date();
+        java.sql.Date sqlDate = new java.sql.Date(currDate.getTime());
+        String query = "INSERT INTO room "
+            + "(`roomName`,`roomCapacity`, `roomVacancy`, `roomRate`, `createdBy`, `updatedBy`, `createdDate`, `updatedDate`) "
+            + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)";
+        try{
+            PreparedStatement stmt = con.prepareStatement(query);
+            stmt.setString(1, roomName.getText());
+            stmt.setInt(2, Integer.parseInt(roomCapacity.getText()));
+            stmt.setInt(3, 1);
+            stmt.setFloat(4, Float.parseFloat(roomRate.getText()));
+            stmt.setInt(5, Storage.ad.getAdminID());
+            stmt.setInt(6, Storage.ad.getAdminID());
+            stmt.setDate(7, sqlDate);
+            stmt.setDate(8, sqlDate);
+            
+            int insert = stmt.executeUpdate();
+            System.out.println("Added new room named " + roomName.getText());
+        }catch(SQLException ex){
+            System.out.println(ex);
+        }
+    }//GEN-LAST:event_confirm_newRoomMouseClicked
+
+    private void confirm_resolveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_confirm_resolveMouseClicked
+       if(JOptionPane.showConfirmDialog(rootPane, "Resolve Issue?")==0){
+        Connection con = DBConnect.getConnection();
+        int issueID = 0, found = 0;
+        String varnewIssue = (String)table.getValueAt(table.getSelectedRow(), 0);
+        String sql = "UPDATE todo SET status = ? WHERE todoId = ?";
+        try {
+            PreparedStatement stmt = con.prepareStatement(sql);
+            rs2 = DBConnect.getResultSet("SELECT (todo.todoId) FROM todo WHERE todo.issueTitle LIKE '"+varnewIssue+"'");
+            try {
+                if(rs2.next()){
+                    issueID = rs2.getInt("todoId");
+                    found = 1;
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            stmt.setInt(1, found);
+            stmt.setInt(2, issueID);
+            stmt.executeUpdate();
+            resolve.setVisible(false);
+            initToDoTable();
+        } catch (SQLException ex) {
+            Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+    }//GEN-LAST:event_confirm_resolveMouseClicked
+
+    private void cancel_resolveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cancel_resolveMouseClicked
+        resolve.dispose();
+    }//GEN-LAST:event_cancel_resolveMouseClicked
+  
+    private void confirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmActionPerformed
+        // TODO add your handling code here:
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String reserName = guestName.getText(),
+               reserCount = pax.getText(),
+               reserRoom = room.getItemAt(room.getSelectedIndex());
+        int guestID = 0,
+            roomID = 0;
+        Connection con = DBConnect.getConnection();
+        Date currDate = new Date();
+        Calendar c = Calendar.getInstance(); 
+        c.setTime(currDate); 
+        c.add(Calendar.DATE, 1);
+        currDate = c.getTime();
+        java.sql.Date sqlDate = new java.sql.Date(currDate.getTime());
+        java.sql.Date sqlDateStart = new java.sql.Date(DateStart.getDate().getTime());
+        java.sql.Date sqlDateEnd = new java.sql.Date(DateEnd.getDate().getTime());
+        rs = DBConnect.getResultSet("SELECT (guest.guestId) FROM guest WHERE guest.guestName LIKE '"+reserName+"'");
+        rs2 = DBConnect.getResultSet("SELECT (room.roomId) FROM room WHERE room.roomName LIKE '"+reserRoom+"'");
+        String query = "INSERT INTO reservations "
+            + "(`guestId`, `roomId`, `createdBy`, `updatedBy`, `checkInDate`, `checkOutDate`, `createdDate`, `updatedDate`) "
+            + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)";
+        try{
+            if(rs.next() && rs2.next()){
+                guestID = rs.getInt("guestId");
+                roomID = rs2.getInt("roomId");
+            }
+            PreparedStatement stmt = con.prepareStatement(query);
+            stmt.setInt(1, guestID);
+            stmt.setInt(2, roomID);
+            stmt.setInt(3, Storage.ad.getAdminID());
+            stmt.setInt(4, Storage.ad.getAdminID());
+            stmt.setDate(5, sqlDateStart);
+            stmt.setDate(6, sqlDateEnd);
+            stmt.setDate(7, sqlDate);
+            stmt.setDate(8, sqlDate);
+            
+            int insert = stmt.executeUpdate();
+            System.out.println("Inserted "+insert+" rows.");
+        }catch(SQLException ex){
+            System.out.println(ex);
+        }
+        
+    }//GEN-LAST:event_confirmActionPerformed
+
+    private void menuStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_menuStateChanged
+        // TODO add your handling code here:
         String tabname = menu.getTitleAt(menu.getSelectedIndex());
         DBConnect db = new DBConnect();
         DefaultTableModel model = null;
@@ -811,7 +933,7 @@ public class Container extends javax.swing.JFrame {
                         }
                     }
             case "New Reservation":
-                     rs = DBConnect.getResultSet("SELECT * FROM room");
+                    rs = DBConnect.getResultSet("SELECT * FROM room");
                     DefaultComboBoxModel cmodel = (DefaultComboBoxModel) room.getModel();
                     cmodel.removeAllElements();
                     room.setModel(cmodel);
@@ -826,114 +948,51 @@ public class Container extends javax.swing.JFrame {
                             Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
+                    break;
+                        
             default: break;
         }
         
-    }//GEN-LAST:event_menuMouseClicked
+    }//GEN-LAST:event_menuStateChanged
 
-    private void confirm_newRoomMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_confirm_newRoomMouseClicked
-        Connection con = DBConnect.getConnection();
-        Date currDate = new Date();
-        java.sql.Date sqlDate = new java.sql.Date(currDate.getTime());
-        String query = "INSERT INTO room "
-            + "(`roomName`,`roomCapacity`, `roomVacancy`, `roomRate`, `createdBy`, `updatedBy`, `createdDate`, `updatedDate`) "
-            + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)";
-        try{
-            PreparedStatement stmt = con.prepareStatement(query);
-            stmt.setString(1, roomName.getText());
-            stmt.setInt(2, Integer.parseInt(roomCapacity.getText()));
-            stmt.setInt(3, 1);
-            stmt.setFloat(4, Float.parseFloat(roomRate.getText()));
-            stmt.setInt(5, Storage.ad.getAdminID());
-            stmt.setInt(6, Storage.ad.getAdminID());
-            stmt.setDate(7, sqlDate);
-            stmt.setDate(8, sqlDate);
-            
-            int insert = stmt.executeUpdate();
-            System.out.println("Added new room named " + roomName.getText());
-        }catch(SQLException ex){
-            System.out.println(ex);
-        }
-    }//GEN-LAST:event_confirm_newRoomMouseClicked
-
-    private void confirm_resolveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_confirm_resolveMouseClicked
-       if(JOptionPane.showConfirmDialog(rootPane, "Resolve Issue?")==0){
-        Connection con = DBConnect.getConnection();
-        int issueID = 0, found = 0;
-        String varnewIssue = (String)table.getValueAt(table.getSelectedRow(), 0);
-        String sql = "UPDATE todo SET status = ? WHERE todoId = ?";
-        try {
-            PreparedStatement stmt = con.prepareStatement(sql);
-            rs2 = DBConnect.getResultSet("SELECT (todo.todoId) FROM todo WHERE todo.issueTitle LIKE '"+varnewIssue+"'");
-            try {
-                if(rs2.next()){
-                    issueID = rs2.getInt("todoId");
-                    found = 1;
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            stmt.setInt(1, found);
-            stmt.setInt(2, issueID);
-            stmt.executeUpdate();
-            resolve.setVisible(false);
-            initToDoTable();
-        } catch (SQLException ex) {
-            Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-    }
-    }//GEN-LAST:event_confirm_resolveMouseClicked
-
-    private void cancel_resolveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cancel_resolveMouseClicked
-        resolve.dispose();
-    }//GEN-LAST:event_cancel_resolveMouseClicked
-  
-    private void confirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmActionPerformed
+    private void ValiBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ValiBtnActionPerformed
         // TODO add your handling code here:
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        String reserName = guestName.getText(),
-               reserCount = pax.getText(),
-               reserRoom = room.getItemAt(room.getSelectedIndex());
-        int guestID = 0,
-            roomID = 0;
-        Connection con = DBConnect.getConnection();
-        Date currDate = new Date();
-        java.sql.Date sqlDate = new java.sql.Date(currDate.getTime());
-        java.sql.Date sqlDateStart = new java.sql.Date(DateStart.getDate().getTime());
-        java.sql.Date sqlDateEnd = new java.sql.Date(DateEnd.getDate().getTime());
-        rs = DBConnect.getResultSet("SELECT (guest.guestId) FROM guest WHERE guest.guestName LIKE '"+reserName+"'");
-        rs2 = DBConnect.getResultSet("SELECT (room.roomId) FROM room WHERE room.roomName LIKE '"+reserRoom+"'");
-        String query = "INSERT INTO reservations "
-            + "(`guestId`, `roomId`, `createdBy`, `updatedBy`, `checkInDate`, `checkOutDate`, `createdDate`, `updatedDate`) "
-            + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)";
-//        String uquery = "UPDATE room SET roomVacancy = ? WHERE roomName = ?";
-        try{
-            if(rs.next() && rs2.next()){
-                guestID = rs.getInt("guestId");
-                roomID = rs2.getInt("roomId");
-            }
-            PreparedStatement stmt = con.prepareStatement(query);
-//            PreparedStatement ustmt = con.prepareStatement(uquery);
-//            ustmt.setInt(1, 0);
-//            ustmt.setString(2, reserRoom);
-            stmt.setInt(1, guestID);
-            stmt.setInt(2, roomID);
-            stmt.setInt(3, Storage.ad.getAdminID());
-            stmt.setInt(4, Storage.ad.getAdminID());
-            stmt.setDate(5, sqlDateStart);
-            stmt.setDate(6, sqlDateEnd);
-            stmt.setDate(7, sqlDate);
-            stmt.setDate(8, sqlDate);
-            
-//            ustmt.executeUpdate();
-            int insert = stmt.executeUpdate();
-            System.out.println("Inserted "+insert+" rows.");
-        }catch(SQLException ex){
-            System.out.println(ex);
-        }
-        
-    }//GEN-LAST:event_confirmActionPerformed
+        String roomName = room.getSelectedItem().toString();
+                            int roomID = 0;
+                            rs2 = DBConnect.getResultSet("SELECT (room.roomId) FROM room WHERE room.roomName LIKE '"+roomName+"'");
+                            try {
+                                if(rs2.next()){
+                                    roomID = rs2.getInt("roomId");
+                                }
+                                rs = DBConnect.getResultSet("SELECT reservations.checkInDate, reservations.checkOutDate FROM reservations INNER JOIN room ON room.roomId = reservations.roomId WHERE room.roomId = "+roomID+"");
+                                while(rs.next()){
+                                    ArrayList<Date> dt = new ArrayList();
+                                    
+                                    Date currdat = rs.getDate("checkInDate");
+                                    Calendar c = Calendar.getInstance();
+                                    c.setTime(currdat);
+                                    c.add(Calendar.DATE, 0);
+                                    dt.add(c.getTime());
+                                    int daysdiff = 0;
+                                    long diff = rs.getDate("checkOutDate").getTime() - rs.getDate("checkInDate").getTime();
+                                    long diffDays = diff / (24 * 60 * 60 * 1000) + 1;
+                                    daysdiff = (int) diffDays;
+                                    for(int x = 0; x < daysdiff; x++){
+                                        dt.add(c.getTime());
+                                        c.setTime(currdat);
+                                        c.add(Calendar.DATE, 1);
+                                        currdat = c.getTime();
+                                        
+                                    }
+                                    Date[] dat = dt.toArray(new Date[dt.size()]);
+                                    DateStart.getMonthView().setUnselectableDates(dat);
+                                    DateEnd.getMonthView().setUnselectableDates(dat);
+                                    DateEnd.getMonthView().setLowerBound(DateStart.getDate());
+                                }
+                            } catch (SQLException ex) {
+                                Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+    }//GEN-LAST:event_ValiBtnActionPerformed
 
     public void open() {
 
@@ -956,6 +1015,7 @@ public class Container extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.jdesktop.swingx.JXDatePicker DateEnd;
     private org.jdesktop.swingx.JXDatePicker DateStart;
+    private javax.swing.JButton ValiBtn;
     private javax.swing.JButton cancel_resolve;
     private javax.swing.JLabel checkout;
     private javax.swing.JButton confirm;
