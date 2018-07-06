@@ -6,8 +6,9 @@ public class DBConnect {
     static final String DB_USER = "root";
     static final String DB_PASSWD = "";
     
-    public Connection getConnection(){
+    public Statement getStatement(){
         Connection connection = null;
+        Statement statement = null;
         try{
             connection = DriverManager.getConnection(DB_URL,DB_USER,DB_PASSWD);
             statement = connection.createStatement();
