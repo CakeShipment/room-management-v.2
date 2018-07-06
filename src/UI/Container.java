@@ -6,6 +6,8 @@ import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,6 +24,9 @@ public class Container extends javax.swing.JFrame {
         initComponents();
         init();
         initToDoTable();
+        
+        DateStart.setFormats("yyyy-MM-dd");
+        DateEnd.setFormats("yyyy-MM-dd");
     }
     
     private void initToDoTable(){
@@ -117,11 +122,11 @@ public class Container extends javax.swing.JFrame {
         rooms_table1 = new javax.swing.JTable();
         newReservation = new javax.swing.JPanel();
         room = new javax.swing.JComboBox<>();
-        from = new javax.swing.JComboBox<>();
-        to = new javax.swing.JComboBox<>();
         confirm = new javax.swing.JButton();
         pax = new javax.swing.JTextField();
         guestName = new javax.swing.JTextField();
+        DateStart = new org.jdesktop.swingx.JXDatePicker();
+        DateEnd = new org.jdesktop.swingx.JXDatePicker();
         reservations = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         reservations_table2 = new javax.swing.JTable();
@@ -433,21 +438,14 @@ public class Container extends javax.swing.JFrame {
         room.setBorder(null);
         room.setFocusable(false);
 
-        from.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        from.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "July-1-2018", "July-2-2018", "July-3-2018" }));
-        from.setToolTipText("Checkin date");
-        from.setBorder(null);
-        from.setFocusable(false);
-
-        to.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        to.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "July-2-2018", "July-3-2018", "July-4-2018" }));
-        to.setToolTipText("Checkout date");
-        to.setBorder(null);
-        to.setFocusable(false);
-
         confirm.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         confirm.setText("Confirm");
         confirm.setFocusable(false);
+        confirm.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                confirmActionPerformed(evt);
+            }
+        });
 
         pax.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         pax.setToolTipText("Number of People");
@@ -457,19 +455,23 @@ public class Container extends javax.swing.JFrame {
         guestName.setToolTipText("Guest Name");
         guestName.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(0, 0, 0)));
 
+        DateStart.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+
+        DateEnd.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+
         javax.swing.GroupLayout newReservationLayout = new javax.swing.GroupLayout(newReservation);
         newReservation.setLayout(newReservationLayout);
         newReservationLayout.setHorizontalGroup(
             newReservationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(newReservationLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, newReservationLayout.createSequentialGroup()
                 .addGap(158, 158, 158)
                 .addGroup(newReservationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(DateStart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(pax)
-                    .addComponent(confirm, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(confirm, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
                     .addComponent(room, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(from, javax.swing.GroupLayout.Alignment.LEADING, 0, 480, Short.MAX_VALUE)
-                    .addComponent(to, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(guestName, javax.swing.GroupLayout.Alignment.LEADING))
+                    .addComponent(guestName, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(DateEnd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(135, 135, 135))
         );
         newReservationLayout.setVerticalGroup(
@@ -482,12 +484,12 @@ public class Container extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(room, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(from, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(DateStart, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(to, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addComponent(DateEnd, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28)
                 .addComponent(confirm, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
 
         menu.addTab("New Reservation", newReservation);
@@ -661,7 +663,7 @@ public class Container extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 887, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(0, 0, 0))
         );
         layout.setVerticalGroup(
@@ -722,7 +724,7 @@ public class Container extends javax.swing.JFrame {
         switch(tabname){
             case "Rooms": 
                     rs = DBConnect.getResultSet("SELECT * FROM room INNER JOIN reservations ON room.roomid = reservations.roomid INNER JOIN guest ON reservations.guestid = guest.guestid");
-                    rs2 = DBConnect.getResultSet("SELECT * FROM room INNER JOIN reservations ON room.roomid != reservations.roomid");
+                    rs2 = DBConnect.getResultSet("SELECT * FROM room ");
                     model = (DefaultTableModel) rooms_table1.getModel();
                     model.setRowCount(0);
                     {
@@ -731,16 +733,17 @@ public class Container extends javax.swing.JFrame {
                                 model.addRow(new Object[]{
                                     rs.getString("roomName"),
                                     vacancy = (rs.getBoolean("roomVacancy") == true)? "Vacant" : "Occupied",
-                                    rs.getString("guestName")
-                                    
+                                    rs.getString("guestName"),
                                 });
                             }
                             while(rs2.next()){
-                                model.addRow(new Object[]{
-                                    rs2.getString("roomName"),
-                                    vacancy = (rs2.getBoolean("roomVacancy") == true)? "Vacant" : "Occupied",
-                                    null,
-                                });
+                                if(rs2.getBoolean("roomVacancy")){
+                                    model.addRow(new Object[]{
+                                        rs2.getString("roomName"),
+                                        vacancy = (rs2.getBoolean("roomVacancy") == true)? "Vacant" : "Occupied",
+                                        null,
+                                    });
+                                }
                             }
                         } catch (SQLException ex) {
                             Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
@@ -807,6 +810,22 @@ public class Container extends javax.swing.JFrame {
                             Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
+            case "New Reservation":
+                     rs = DBConnect.getResultSet("SELECT * FROM room");
+                    DefaultComboBoxModel cmodel = (DefaultComboBoxModel) room.getModel();
+                    cmodel.removeAllElements();
+                    room.setModel(cmodel);
+                    {
+                        try {
+                            while(rs.next()){
+                                if(rs.getBoolean("roomVacancy")){
+                                    room.addItem(rs.getString("roomName"));
+                                }
+                            }
+                        } catch (SQLException ex) {
+                            Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
             default: break;
         }
         
@@ -837,6 +856,52 @@ public class Container extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_confirm_newRoomMouseClicked
 
+    private void confirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmActionPerformed
+        // TODO add your handling code here:
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String reserName = guestName.getText(),
+               reserCount = pax.getText(),
+               reserRoom = room.getItemAt(room.getSelectedIndex());
+        int guestID = 0,
+            roomID = 0;
+        Connection con = DBConnect.getConnection();
+        Date currDate = new Date();
+        java.sql.Date sqlDate = new java.sql.Date(currDate.getTime());
+        java.sql.Date sqlDateStart = new java.sql.Date(DateStart.getDate().getTime());
+        java.sql.Date sqlDateEnd = new java.sql.Date(DateEnd.getDate().getTime());
+        rs = DBConnect.getResultSet("SELECT (guest.guestId) FROM guest WHERE guest.guestName LIKE '"+reserName+"'");
+        rs2 = DBConnect.getResultSet("SELECT (room.roomId) FROM room WHERE room.roomName LIKE '"+reserRoom+"'");
+        String query = "INSERT INTO reservations "
+            + "(`guestId`, `roomId`, `createdBy`, `updatedBy`, `checkInDate`, `checkOutDate`, `createdDate`, `updatedDate`) "
+            + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)";
+//        String uquery = "UPDATE room SET roomVacancy = ? WHERE roomName = ?";
+        try{
+            if(rs.next() && rs2.next()){
+                guestID = rs.getInt("guestId");
+                roomID = rs2.getInt("roomId");
+            }
+            PreparedStatement stmt = con.prepareStatement(query);
+//            PreparedStatement ustmt = con.prepareStatement(uquery);
+//            ustmt.setInt(1, 0);
+//            ustmt.setString(2, reserRoom);
+            stmt.setInt(1, guestID);
+            stmt.setInt(2, roomID);
+            stmt.setInt(3, Storage.ad.getAdminID());
+            stmt.setInt(4, Storage.ad.getAdminID());
+            stmt.setDate(5, sqlDateStart);
+            stmt.setDate(6, sqlDateEnd);
+            stmt.setDate(7, sqlDate);
+            stmt.setDate(8, sqlDate);
+            
+//            ustmt.executeUpdate();
+            int insert = stmt.executeUpdate();
+            System.out.println("Inserted "+insert+" rows.");
+        }catch(SQLException ex){
+            System.out.println(ex);
+        }
+        
+    }//GEN-LAST:event_confirmActionPerformed
+
     public void open() {
 
         try {
@@ -856,6 +921,8 @@ public class Container extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private org.jdesktop.swingx.JXDatePicker DateEnd;
+    private org.jdesktop.swingx.JXDatePicker DateStart;
     private javax.swing.JButton cancel_resolve;
     private javax.swing.JLabel checkout;
     private javax.swing.JButton confirm;
@@ -863,7 +930,6 @@ public class Container extends javax.swing.JFrame {
     private javax.swing.JButton confirm_newRoom;
     private javax.swing.JButton confirm_resolve;
     private javax.swing.JButton delete_guest;
-    private javax.swing.JComboBox<String> from;
     private javax.swing.JDialog guest;
     private javax.swing.JTextField guestName;
     private javax.swing.JTextPane issueDesc;
@@ -902,7 +968,6 @@ public class Container extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> room_newIssue;
     private javax.swing.JPanel rooms;
     private javax.swing.JTable rooms_table1;
-    private javax.swing.JComboBox<String> to;
     private javax.swing.JPanel toDo;
     private javax.swing.JTable toDo_table;
     private javax.swing.JLabel username;
