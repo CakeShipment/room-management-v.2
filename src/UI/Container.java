@@ -36,7 +36,7 @@ public class Container extends javax.swing.JFrame {
     
     private void initToDoTable(){
         DefaultTableModel model = null;
-        rs = DBConnect.getResultSet("SELECT todo.issueTitle, room.roomName, todo.updatedDate FROM todo INNER JOIN room ON room.roomId = todo.roomId");
+        rs = DBConnect.getResultSet("SELECT todo.issueTitle, room.roomName, todo.updatedDate FROM todo INNER JOIN room ON room.roomId = todo.roomId WHERE todo.status!=1");
         model = (DefaultTableModel) toDo_table.getModel();
         model.setRowCount(0);
         {
@@ -62,7 +62,7 @@ public class Container extends javax.swing.JFrame {
                 col = table.columnAtPoint(point);
 
                 if (mouseEvent.getClickCount() == 2 ) {
-                    resolve.show();
+                    resolve.setVisible(true);
                 }
             }
         });
@@ -161,7 +161,7 @@ public class Container extends javax.swing.JFrame {
         room_id.setText("12B");
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel3.setText("Mark as ressolved?");
+        jLabel3.setText("Mark as resolved?");
 
         confirm_resolve.setText("Confirm");
         confirm_resolve.setFocusable(false);
@@ -213,7 +213,7 @@ public class Container extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel3)
+                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(confirm_resolve)
@@ -706,7 +706,9 @@ public class Container extends javax.swing.JFrame {
             stmt.setInt(7, Storage.ad.getAdminID());
             stmt.setDate(8, sqlDate);
             stmt.setDate(9, sqlDate);
-            
+            issueTitle.setText("");
+            issueDesc.setText("");
+            JOptionPane.showMessageDialog(rootPane, "Successfully Added Issue");
             int insert = stmt.executeUpdate();
             System.out.println("Inserted "+insert+" rows.");
         }catch(SQLException ex){
@@ -855,29 +857,32 @@ public class Container extends javax.swing.JFrame {
     }//GEN-LAST:event_confirm_newRoomMouseClicked
 
     private void confirm_resolveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_confirm_resolveMouseClicked
-        if(JOptionPane.showConfirmDialog(rootPane, "Resolve Issue?")==0){
-            Connection con = DBConnect.getConnection();
-            int issueID = 0;
-            String varnewIssue = (String)table.getValueAt(table.getSelectedRow(), 0);
-            String sql = "DELETE FROM todo WHERE todoId = ?";
+       if(JOptionPane.showConfirmDialog(rootPane, "Resolve Issue?")==0){
+        Connection con = DBConnect.getConnection();
+        int issueID = 0, found = 0;
+        String varnewIssue = (String)table.getValueAt(table.getSelectedRow(), 0);
+        String sql = "UPDATE todo SET status = ? WHERE todoId = ?";
+        try {
+            PreparedStatement stmt = con.prepareStatement(sql);
+            rs2 = DBConnect.getResultSet("SELECT (todo.todoId) FROM todo WHERE todo.issueTitle LIKE '"+varnewIssue+"'");
             try {
-                PreparedStatement stmt = con.prepareStatement(sql);
-                rs2 = DBConnect.getResultSet("SELECT (todo.todoId) FROM todo WHERE todo.issueTitle LIKE '"+varnewIssue+"'");
-                try {
-                    if(rs2.next()){
-                        issueID = rs2.getInt("todoId");
-                    }
-                } catch (SQLException ex) {
-                    Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
+                if(rs2.next()){
+                    issueID = rs2.getInt("todoId");
+                    found = 1;
                 }
-                stmt.setInt(1, issueID);
-                stmt.executeUpdate();
-                initToDoTable();
-                resolve.dispose();
             } catch (SQLException ex) {
                 Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
             }
+            stmt.setInt(1, found);
+            stmt.setInt(2, issueID);
+            stmt.executeUpdate();
+            resolve.setVisible(false);
+            initToDoTable();
+        } catch (SQLException ex) {
+            Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+    }
     }//GEN-LAST:event_confirm_resolveMouseClicked
 
     private void cancel_resolveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cancel_resolveMouseClicked
