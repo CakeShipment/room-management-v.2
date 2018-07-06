@@ -1,13 +1,15 @@
 package UI;
 
-
-import Entities.*;
 import Connection.DBConnect;
+import Entities.*;
 import java.sql.*;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
 
 public class Container extends javax.swing.JFrame {
-
+    ResultSet rs = null;
     public Container() {
         initComponents();
         init();
@@ -280,6 +282,11 @@ public class Container extends javax.swing.JFrame {
 
         menu.setTabPlacement(javax.swing.JTabbedPane.LEFT);
         menu.setFocusable(false);
+        menu.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                menuMouseClicked(evt);
+            }
+        });
 
         toDo.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -582,7 +589,39 @@ public class Container extends javax.swing.JFrame {
         }catch(SQLException ex){
             System.out.println(ex);
         }
-    }//GEN-LAST:event_confirm_newIssueActionPerformed
+    }
+  
+    private void menuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuMouseClicked
+        // TODO add your handling code here:
+        String tabname = menu.getTitleAt(menu.getSelectedIndex());
+        DBConnect db = new DBConnect();
+        DefaultTableModel model = null;
+        String vacancy = "";
+        switch(tabname){
+            case "Rooms": 
+                    rs = DBConnect.getResultSet("SELECT * FROM room INNER JOIN reservations ON room.roomid = reservations.roomid INNER JOIN guest ON reservations.guestid = guest.guestid");
+                    model = (DefaultTableModel) rooms_table1.getModel();
+                    model.setRowCount(0);
+                    {
+                        try {
+                            while(rs.next()){
+                                model.addRow(new Object[]{
+                                    rs.getString("roomName"),
+                                    vacancy = (rs.getBoolean("roomVacancy") == true)? "Vacant" : "Occupied",
+                                    rs.getString("guestName")
+                                });
+                            }
+                        } catch (SQLException ex) {
+                            Logger.getLogger(Container.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    break;
+            //add
+            
+            
+            default: break;
+        }
+    }//GEN-LAST:event_menuMouseClicked
 
     public void open() {
 
